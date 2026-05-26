@@ -1,14 +1,15 @@
-import React, { useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { TextPlugin } from 'gsap/TextPlugin';
 import { useLoading } from '../../context/LoadingContext';
 import logoWhite from '../../assets/IMG/Logo.png';
 import logoYellow from '../../assets/IMG/Logo_Y.png';
 
+gsap.registerPlugin(TextPlugin);
+
 const PageLoader = () => {
-  const { pathname } = useLocation();
-  const { setIsPageReady } = useLoading();
+  const { pageLoadConfig, setPageLoadConfig, setIsPageReady } = useLoading();
   
   const containerRef = useRef(null);
   const gradientRef = useRef(null);
@@ -17,14 +18,18 @@ const PageLoader = () => {
   const whiteLogoRef = useRef(null);
   const linesContainerRef = useRef(null);
   const linesRef = useRef([]);
+  const textRef = useRef(null);
 
   useGSAP(() => {
+    if (!pageLoadConfig.isActive) return;
+
     setIsPageReady(false);
 
     const tl = gsap.timeline({
       onComplete: () => {
         setIsPageReady(true);
         gsap.set(containerRef.current, { display: 'none' });
+        setPageLoadConfig({ isActive: false });
       }
     });
 
@@ -45,6 +50,7 @@ const PageLoader = () => {
     gsap.set(whiteLogoRef.current, { opacity: 1, scale: 1 });
     gsap.set(yellowLogoRef.current, { opacity: 0, scale: 0.95 });
     gsap.set(linesContainerRef.current, { opacity: 0 });
+    gsap.set(textRef.current, { text: "" }); // Limpia el texto
 
     // Animación continua de las líneas (Updraft)
     const linesTween = gsap.fromTo(linesRef.current, 
@@ -66,10 +72,29 @@ const PageLoader = () => {
 
     // --- FASE 1: LA EMBESTIDA (0s a 1.2s) ---
     tl.to(gradientRef.current, { y: '-20%', duration: surgeDuration, ease: 'power2.in' }, 0);
+    // Efecto de cámara rápida (shake/glitch simulado con temblor de escala)
     tl.to(whiteLogoRef.current, { opacity: 0, scale: 1.05, duration: surgeDuration, ease: 'power2.inOut' }, 0);
     tl.to(yellowLogoRef.current, { opacity: 1, scale: 1.05, duration: surgeDuration, ease: 'power2.inOut' }, 0);
+    
+    // Mini temblor (Power-On Flash Shake)
+    tl.to(containerRef.current, {
+      x: () => Math.random() * 6 - 3,
+      y: () => Math.random() * 6 - 3,
+      duration: 0.05,
+      repeat: 8,
+      yoyo: true,
+      ease: 'none'
+    }, surgeDuration - 0.4);
+
     tl.to(linesContainerRef.current, { opacity: 1, duration: surgeDuration, ease: 'power2.in' }, 0);
-    tl.to(linesTween, { timeScale: 12, duration: surgeDuration, ease: 'power3.in' }, 0);
+    tl.to(linesTween, { timeScale: 15, duration: surgeDuration, ease: 'power3.in' }, 0);
+
+    // Texto Scramble/Escribir
+    tl.to(textRef.current, {
+      text: { value: "INITIALIZING SYSTEMS...", delimiter: "" },
+      duration: 0.8,
+      ease: "none"
+    }, 0.2);
 
     // --- FASE 2: EL FRENADO Y RETORNO AL NEGRO (1.2s a 2.2s) ---
     tl.to(blackWashRef.current, { y: '0%', duration: cooldownDuration, ease: 'power2.out' }, surgeDuration);
@@ -80,29 +105,30 @@ const PageLoader = () => {
     tl.to(linesTween, { timeScale: 0.1, duration: cooldownDuration, ease: 'power3.out' }, surgeDuration);
 
     // --- FASE 3: DESVANECIMIENTO FINAL ---
+    tl.to(textRef.current, { opacity: 0, duration: 0.2 }, surgeDuration + cooldownDuration);
     tl.to(containerRef.current, {
       opacity: 0,
       duration: 0.4,
       ease: 'power2.inOut'
     }, surgeDuration + cooldownDuration);
 
-  }, { dependencies: [pathname, setIsPageReady], revertOnUpdate: true });
+  }, { dependencies: [pageLoadConfig.isActive, setIsPageReady], revertOnUpdate: true });
 
   return (
     <div 
       ref={containerRef}
-      className="fixed inset-0 z-[9999] bg-[#0c0c0c] flex items-center justify-center overflow-hidden pointer-events-none"
+      className="fixed inset-0 z-[9999] bg-[#0c0c0c] hidden items-center justify-center overflow-hidden pointer-events-none"
     >
       {/* Updraft Speed Lines */}
       <div 
         ref={linesContainerRef}
         className="absolute inset-0 w-full h-full overflow-hidden mix-blend-screen pointer-events-none z-10"
       >
-        {[...Array(25)].map((_, i) => (
+        {[...Array(30)].map((_, i) => (
           <div 
             key={i}
             ref={el => linesRef.current[i] = el}
-            className="absolute top-0 w-[2px] h-[300px] bg-white blur-[1px]"
+            className="absolute top-0 w-[1.5px] h-[350px] bg-[#FFD700] opacity-80"
           ></div>
         ))}
       </div>
@@ -139,8 +165,11 @@ const PageLoader = () => {
       </div>
       
       {/* Progress Text */}
-      <div className="absolute bottom-12 font-mono text-[10px] text-pop-yellow tracking-[0.3em] uppercase animate-pulse">
-        Inicializando Sistemas...
+      <div 
+        ref={textRef}
+        className="absolute bottom-12 font-mono text-[10px] md:text-xs text-[#FFD700] tracking-[0.3em] uppercase"
+      >
+        {/* Llenado por TextPlugin */}
       </div>
     </div>
   );

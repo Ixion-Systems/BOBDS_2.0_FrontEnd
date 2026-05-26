@@ -1,17 +1,47 @@
-import React, { useRef } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { authService } from '../services/authService';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { useLoading } from '../context/LoadingContext';
 
-const Signup = () => {
+const SignupPage = () => {
   const depthElementRef = useRef(null);
   const formRef = useRef(null);
   const titleRef = useRef(null);
 
   const glowRef = useRef(null);
-  const { isPageReady } = useLoading();
+  const { isPageReady, triggerQuickTransition } = useLoading();
   const containerRef = useRef(null);
+  const navigate = useNavigate();
+
+  // Estados del Formulario
+  const [formData, setFormData] = useState({ nombre: '', email: '', password: '' });
+  const [loading, setLoading] = useState(false);
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      await authService.signup(formData.nombre, formData.password, formData.email);
+      // Navegación rápida usando el iris mecánico a la nueva pantalla
+      triggerQuickTransition(() => navigate('/verify', { state: { email: formData.email } }));
+    } catch (error) {
+      window.alert('❌ Error: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleQuickNav = (e, path) => {
+    e.preventDefault();
+    triggerQuickTransition(() => navigate(path));
+  };
 
   useGSAP(() => {
     if (!isPageReady) {
@@ -83,13 +113,17 @@ const Signup = () => {
             <div className="w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mt-6"></div>
           </div>
 
-          <form action="#" className="w-full space-y-6" method="POST">
+          <form onSubmit={handleSubmit} className="w-full space-y-6">
             <div className="space-y-2">
-              <label className="block font-label-sm text-label-sm text-on-surface-variant flex items-center gap-2" htmlFor="operator-name">
+              <label className="block font-label-sm text-label-sm text-on-surface-variant flex items-center gap-2" htmlFor="nombre">
                 <span className="material-symbols-outlined text-[14px]">person</span>Nombre de Operador
               </label>
               <div className="relative">
-                <input className="w-full px-5 py-3.5 font-body-md text-body-md text-on-surface rounded-xl bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 focus:border-pop-yellow focus:ring-0 focus:shadow-[0_0_15px_rgba(255,235,0,0.15)] placeholder:text-on-surface-variant/30" id="operator-name" name="operator-name" placeholder="ej. John Doe" required type="text" />
+                <input 
+                  className="w-full px-5 py-3.5 font-body-md text-body-md text-on-surface rounded-xl bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 focus:border-pop-yellow focus:ring-0 focus:shadow-[0_0_15px_rgba(255,235,0,0.15)] placeholder:text-on-surface-variant/30" 
+                  id="nombre" name="nombre" placeholder="ej. John Doe" required type="text" 
+                  value={formData.nombre} onChange={handleInputChange}
+                />
               </div>
             </div>
 
@@ -98,7 +132,11 @@ const Signup = () => {
                 <span className="material-symbols-outlined text-[14px]">mail</span>Email
               </label>
               <div className="relative">
-                <input className="w-full px-5 py-3.5 font-body-md text-body-md text-on-surface rounded-xl bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 focus:border-pop-yellow focus:ring-0 focus:shadow-[0_0_15px_rgba(255,235,0,0.15)] placeholder:text-on-surface-variant/30" id="email" name="email" placeholder="operador@bobds.com" required type="email" />
+                <input 
+                  className="w-full px-5 py-3.5 font-body-md text-body-md text-on-surface rounded-xl bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 focus:border-pop-yellow focus:ring-0 focus:shadow-[0_0_15px_rgba(255,235,0,0.15)] placeholder:text-on-surface-variant/30" 
+                  id="email" name="email" placeholder="operador@bobds.com" required type="email" 
+                  value={formData.email} onChange={handleInputChange}
+                />
               </div>
             </div>
 
@@ -107,22 +145,30 @@ const Signup = () => {
                 <span className="material-symbols-outlined text-[14px]">key</span>Contraseña
               </label>
               <div className="relative">
-                <input className="w-full px-5 py-3.5 font-body-md text-body-md text-on-surface rounded-xl bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 focus:border-pop-yellow focus:ring-0 focus:shadow-[0_0_15px_rgba(255,235,0,0.15)] placeholder:text-on-surface-variant/30" id="password" name="password" placeholder="••••••••" required type="password" />
+                <input 
+                  className="w-full px-5 py-3.5 font-body-md text-body-md text-on-surface rounded-xl bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 focus:border-pop-yellow focus:ring-0 focus:shadow-[0_0_15px_rgba(255,235,0,0.15)] placeholder:text-on-surface-variant/30" 
+                  id="password" name="password" placeholder="••••••••" required type="password" 
+                  value={formData.password} onChange={handleInputChange}
+                />
               </div>
             </div>
 
             <div className="pt-6">
-              <button className="w-full bg-pop-yellow text-primary-container font-cta text-cta py-4 px-6 rounded-DEFAULT flex items-center justify-center gap-3 hover:glow-yellow transition-all duration-300 group" type="submit">
-                <span>CREAR</span>
-                <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform duration-300 text-[18px]">arrow_forward</span>
+              <button 
+                disabled={loading}
+                className="w-full bg-pop-yellow text-primary-container font-cta text-cta py-4 px-6 rounded-DEFAULT flex items-center justify-center gap-3 hover:glow-yellow transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed" 
+                type="submit"
+              >
+                <span>{loading ? 'AUTENTICANDO...' : 'CREAR'}</span>
+                {!loading && <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform duration-300 text-[18px]">arrow_forward</span>}
               </button>
             </div>
           </form>
 
           <div className="mt-8 text-center border-t border-white/10 w-full pt-6">
-            <Link to="/login" className="font-label-sm text-label-sm text-pop-yellow hover:text-white transition-colors duration-300">
+            <a href="/login" onClick={(e) => handleQuickNav(e, '/login')} className="font-label-sm text-label-sm text-pop-yellow hover:text-white transition-colors duration-300 cursor-pointer">
               ¿Ya tienes cuenta? Iniciar Sesión
-            </Link>
+            </a>
           </div>
           
           <div className="mt-8 pt-6 border-t border-white/10 w-full flex justify-between items-center font-label-sm text-label-sm text-surface-variant">
@@ -144,12 +190,12 @@ const Signup = () => {
       <div className="pointer-events-none absolute inset-0 z-50 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] opacity-10 mix-blend-overlay"></div>
 
       {/* Return Button */}
-      <Link to="/login" className="absolute top-4 left-4 md:top-8 md:left-8 z-50 flex items-center gap-2 text-white/50 hover:text-pop-yellow transition-colors font-cta text-xs md:text-sm uppercase bg-black/40 md:bg-transparent px-3 py-1.5 md:p-0 rounded-full md:rounded-none backdrop-blur-md md:backdrop-blur-none border border-white/10 md:border-none">
+      <a href="/login" onClick={(e) => handleQuickNav(e, '/login')} className="absolute top-4 left-4 md:top-8 md:left-8 z-50 flex items-center gap-2 text-white/50 hover:text-pop-yellow transition-colors font-cta text-xs md:text-sm uppercase bg-black/40 md:bg-transparent px-3 py-1.5 md:p-0 rounded-full md:rounded-none backdrop-blur-md md:backdrop-blur-none border border-white/10 md:border-none cursor-pointer">
         <span className="material-symbols-outlined text-[16px] md:text-[18px]">arrow_back</span>
         Volver
-      </Link>
+      </a>
     </div>
   );
 };
 
-export default Signup;
+export default SignupPage;

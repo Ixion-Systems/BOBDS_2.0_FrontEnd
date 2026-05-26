@@ -3,20 +3,20 @@ import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useLoading } from './context/LoadingContext';
+import { useLoading } from '../context/LoadingContext';
 
 // Importación de Componentes de Layout
-import Navbar from './components/layout/Navbar';
-import LandingHero from './components/layout/LandingHero';
-import LandingSections from './components/layout/LandingSections';
+import Navbar from '../components/layout/Navbar';
+import LandingHero from '../features/landing/LandingHero';
+import LandingSections from '../features/landing/LandingSections';
 
 // Importación de Estilos Globales
-import './styles/theme.css';
+import '../styles/theme.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
 // Componente Principal de Enrutamiento de Inicio
-const MainLanding = () => {
+const LandingPage = () => {
   // Referencias de Elementos DOM para Control de Flujo
   const container = useRef();
   const { isPageReady } = useLoading();
@@ -111,4 +111,4 @@ const MainLanding = () => {
   );
 };
 
-export default MainLanding;
+export default LandingPage;

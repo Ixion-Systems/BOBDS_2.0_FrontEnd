@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useLoading } from '../../context/LoadingContext';
 
 const Navbar = () => {
   const [activeSection, setActiveSection] = useState('inicio');
+  const { triggerQuickTransition } = useLoading();
+  const navigate = useNavigate();
+
+  const handleLoginClick = (e) => {
+    e.preventDefault();
+    triggerQuickTransition(() => navigate('/login'));
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -57,11 +65,12 @@ const Navbar = () => {
             <a className={getLinkClass('faq')} href="#faq">FAQ</a>
           </div>
         </div>
-        <Link 
-          to="/login"
-          className="flex-1 max-w-[140px] md:max-w-none md:flex-none bg-pop-yellow text-[#0C0C0C] font-headline-md text-[11px] md:text-base px-3 py-2.5 md:px-6 md:py-2 rounded-none uppercase font-bold glow-button transition-transform active:scale-95 flex items-center justify-center text-center leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
+        <a 
+          href="/login"
+          onClick={handleLoginClick}
+          className="flex-1 max-w-[140px] md:max-w-none md:flex-none bg-pop-yellow text-[#0C0C0C] font-headline-md text-[11px] md:text-base px-3 py-2.5 md:px-6 md:py-2 rounded-none uppercase font-bold glow-button transition-transform active:scale-95 flex items-center justify-center text-center leading-tight whitespace-nowrap overflow-hidden text-ellipsis cursor-pointer">
           INICIAR SESION
-        </Link>
+        </a>
       </div>
     </nav>
   );
