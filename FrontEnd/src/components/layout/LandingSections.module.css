@@ -1,0 +1,277 @@
+.sectionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15rem;
+  padding: 10rem 5%;
+  background-color: var(--color-bg-main);
+  color: var(--color-text-main);
+  font-family: 'Stack Sans Notch', system-ui, sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Base Section */
+.section {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.sectionHeader {
+  margin-bottom: 5rem;
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.sectionLabel {
+  font-family: 'Stack Sans Notch', monospace;
+  font-size: 1rem;
+  color: var(--color-accent);
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+}
+
+.sectionTitle {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 300;
+  margin-bottom: 2rem;
+  color: var(--color-text-main);
+  line-height: 1.2;
+}
+
+.sectionTitleCenter {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 300;
+  color: var(--color-text-main);
+  line-height: 1.2;
+  margin: 0;
+}
+
+.sectionText {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--color-text-muted);
+  font-weight: 300;
+}
+
+/* Clean Card Style for Sections (was Brutal Card) */
+.cleanCard {
+  display: flex;
+  align-items: center;
+  gap: 6rem;
+  background: transparent;
+  padding: 0;
+  position: relative;
+}
+
+.cleanCard.reverse {
+  flex-direction: row-reverse;
+}
+
+.contentLeft {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.contentRight {
+  flex: 1;
+  display: flex;
+}
+
+.imageWrapper {
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: var(--glass-shadow);
+}
+
+.sectionImage {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+
+.imageWrapper:hover .sectionImage {
+  transform: scale(1.05);
+}
+
+/* Features Grid */
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 4rem;
+}
+
+.featureCard {
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 3rem;
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.featureCard:hover {
+  border-color: var(--color-accent);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  transform: translateY(-5px);
+}
+
+.featureImageContainer {
+  height: 200px;
+  margin: -3rem -3rem 2rem -3rem;
+  width: calc(100% + 6rem);
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
+}
+
+.featureImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.featureCard:hover .featureImage {
+  transform: scale(1.05);
+}
+
+.featureTitle {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  color: var(--color-text-main);
+}
+
+.featureText {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+/* Relations Logos */
+.logosGrid {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  flex-wrap: wrap;
+}
+
+.logoItem {
+  padding: 2rem 4rem;
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  font-size: 1.5rem;
+  font-weight: 300;
+  text-align: center;
+  color: var(--color-text-main);
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.logoItem:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  box-shadow: 0 0 20px var(--color-accent-glow);
+  transform: translateY(-3px);
+}
+
+/* FAQ Accordion */
+.faqContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.faqItem {
+  background: transparent;
+  border-bottom: 1px solid var(--glass-border);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.faqItem:hover {
+  border-color: var(--color-accent);
+}
+
+.faqItem.open {
+  border-color: var(--color-accent);
+}
+
+.faqHeader {
+  padding: 2rem 0;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.faqIndex {
+  font-size: 1rem;
+  font-weight: 300;
+  color: var(--color-accent);
+}
+
+.faqHeader h3 {
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin: 0;
+  color: var(--color-text-main);
+  flex: 1;
+}
+
+.faqIcon {
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: var(--color-accent);
+  transition: transform 0.3s ease;
+}
+
+.faqItem.open .faqIcon {
+  transform: rotate(45deg);
+}
+
+.faqBody {
+  padding: 0 0 2rem 0;
+}
+
+.faqBody p {
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: 1.8;
+  font-size: 1rem;
+  font-weight: 300;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .sectionsContainer {
+    gap: 8rem;
+    padding: 6rem 5%;
+  }
+
+  .cleanCard, .cleanCard.reverse {
+    flex-direction: column;
+    gap: 3rem;
+  }
+  
+  .faqHeader {
+    gap: 1rem;
+  }
+}
