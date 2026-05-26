@@ -1,15 +1,51 @@
-import React, { useRef } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { useLoading } from '../context/LoadingContext';
+import { authService } from '../services/authService';
+import { useAuth } from '../context/AuthContext';
 
-const Login = () => {
+const LoginPage = () => {
   const depthElementRef = useRef(null);
   const formRef = useRef(null);
   const titleRef = useRef(null);
-  const { isPageReady } = useLoading();
+  const { isPageReady, triggerQuickTransition, triggerOrbitalTransition } = useLoading();
   const containerRef = useRef(null);
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  const [formData, setFormData] = useState({ email: '', password: '', keepSession: false });
+  const [loading, setLoading] = useState(false);
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const result = await authService.login(formData.email, formData.password);
+      // El backend devuelve: "Inicio de sesión exitoso. Bienvenido, [Nombre]!"
+      // Si todo va bien, establecemos el usuario en el context
+      login({ email: formData.email }, formData.keepSession);
+      triggerOrbitalTransition(() => navigate('/dashboard'));
+    } catch (error) {
+      window.alert('❌ Error: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleQuickNav = (e, path) => {
+    e.preventDefault();
+    triggerQuickTransition(() => navigate(path));
+  };
 
   useGSAP(() => {
     if (!isPageReady) {
@@ -100,14 +136,18 @@ const Login = () => {
             <div className="w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mt-6"></div>
           </div>
           {/* Login Form */}
-          <form action="#" className="w-full space-y-6" method="POST">
+          <form onSubmit={handleSubmit} className="w-full space-y-6">
             <div className="space-y-2">
               <label className="block font-label-sm text-label-sm text-on-surface-variant flex items-center gap-2" htmlFor="email">
                 <span className="material-symbols-outlined text-[14px]">person</span>
                 Email
               </label>
               <div className="relative">
-                <input className="w-full px-5 py-3.5 font-body-md text-body-md text-on-surface rounded-xl bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 focus:border-pop-yellow focus:ring-0 focus:shadow-[0_0_15px_rgba(255,225,0,0.15)] placeholder:text-on-surface-variant/30" id="email" name="email" placeholder="user@bobds.net" required="" type="email" />
+                <input 
+                  className="w-full px-5 py-3.5 font-body-md text-body-md text-on-surface rounded-xl bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 focus:border-pop-yellow focus:ring-0 focus:shadow-[0_0_15px_rgba(255,225,0,0.15)] placeholder:text-on-surface-variant/30" 
+                  id="email" name="email" placeholder="user@bobds.net" required type="email" 
+                  value={formData.email} onChange={handleInputChange}
+                />
               </div>
             </div>
             <div className="space-y-2">
@@ -115,13 +155,21 @@ const Login = () => {
                 <span className="material-symbols-outlined text-[14px]">key</span>Contraseña
               </label>
               <div className="relative">
-                <input className="w-full px-5 py-3.5 font-body-md text-body-md text-on-surface rounded-xl bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 focus:border-pop-yellow focus:ring-0 focus:shadow-[0_0_15px_rgba(255,225,0,0.15)] placeholder:text-on-surface-variant/30" id="password" name="password" placeholder="••••••••" required="" type="password" />
+                <input 
+                  className="w-full px-5 py-3.5 font-body-md text-body-md text-on-surface rounded-xl bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 focus:border-pop-yellow focus:ring-0 focus:shadow-[0_0_15px_rgba(255,225,0,0.15)] placeholder:text-on-surface-variant/30" 
+                  id="password" name="password" placeholder="••••••••" required type="password" 
+                  value={formData.password} onChange={handleInputChange}
+                />
               </div>
             </div>
             <div className="flex items-center justify-between pt-2">
               <div className="flex items-center">
-                <input className="h-4 w-4 rounded-sm border-white/20 bg-transparent text-pop-yellow focus:ring-pop-yellow focus:ring-offset-background" id="remember-me" name="remember-me" type="checkbox" />
-                <label className="ml-2 block font-label-sm text-label-sm text-on-surface-variant" htmlFor="remember-me">
+                <input 
+                  className="h-4 w-4 rounded-sm border-white/20 bg-transparent text-pop-yellow focus:ring-pop-yellow focus:ring-offset-background cursor-pointer" 
+                  id="keepSession" name="keepSession" type="checkbox" 
+                  checked={formData.keepSession} onChange={handleInputChange}
+                />
+                <label className="ml-2 block font-label-sm text-label-sm text-on-surface-variant cursor-pointer" htmlFor="keepSession">
                   MANTENER SESIÓN
                 </label>
               </div>
@@ -130,13 +178,17 @@ const Login = () => {
               </a>
             </div>
             <div className="pt-6 flex flex-col items-center gap-4">
-              <button className="w-full bg-pop-yellow text-primary-container font-cta text-cta py-4 px-6 rounded-DEFAULT flex items-center justify-center gap-3 hover:glow-yellow transition-all duration-300 group" type="submit">
-                <span className="">INGRESAR</span>
-                <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform duration-300 text-[18px]">arrow_forward</span>
+              <button 
+                disabled={loading}
+                className="w-full bg-pop-yellow text-primary-container font-cta text-cta py-4 px-6 rounded-DEFAULT flex items-center justify-center gap-3 hover:glow-yellow transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed" 
+                type="submit"
+              >
+                <span>{loading ? 'AUTENTICANDO...' : 'INGRESAR'}</span>
+                {!loading && <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform duration-300 text-[18px]">arrow_forward</span>}
               </button>
-              <Link to="/signup" className="font-label-sm text-label-sm text-on-surface-variant hover:text-pop-yellow transition-colors duration-300 text-center">
+              <a href="/signup" onClick={(e) => handleQuickNav(e, '/signup')} className="font-label-sm text-label-sm text-on-surface-variant hover:text-pop-yellow transition-colors duration-300 text-center cursor-pointer">
                 ¿No tienes una cuenta? <span className="text-white">Crea una gratis aquí</span>
-              </Link>
+              </a>
             </div>
           </form>
           {/* Terminal-style Footer */}
@@ -153,12 +205,12 @@ const Login = () => {
       <div className="pointer-events-none absolute inset-0 z-50 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] opacity-10 mix-blend-overlay"></div>
       
       {/* Return Home Button */}
-      <Link to="/" className="absolute top-4 left-4 md:top-8 md:left-8 z-50 flex items-center gap-2 text-white/50 hover:text-pop-yellow transition-colors font-cta text-xs md:text-sm uppercase bg-black/40 md:bg-transparent px-3 py-1.5 md:p-0 rounded-full md:rounded-none backdrop-blur-md md:backdrop-blur-none border border-white/10 md:border-none">
+      <a href="/" onClick={(e) => handleQuickNav(e, '/')} className="absolute top-4 left-4 md:top-8 md:left-8 z-50 flex items-center gap-2 text-white/50 hover:text-pop-yellow transition-colors font-cta text-xs md:text-sm uppercase bg-black/40 md:bg-transparent px-3 py-1.5 md:p-0 rounded-full md:rounded-none backdrop-blur-md md:backdrop-blur-none border border-white/10 md:border-none cursor-pointer">
         <span className="material-symbols-outlined text-[16px] md:text-[18px]">arrow_back</span>
         Volver
-      </Link>
+      </a>
     </div>
   );
 };
 
-export default Login;
+export default LoginPage;

@@ -1,24 +1,40 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import MainLanding from './main-landing';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
+import LandingPage from './pages/LandingPage';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
+import VerifyPage from './pages/VerifyPage';
+import DashboardPage from './pages/DashboardPage';
+import ProtectedRoute from './components/common/ProtectedRoute';
 import { LoadingProvider } from './context/LoadingContext';
+import { AuthProvider } from './context/AuthContext';
 import PageLoader from './components/common/PageLoader';
+import QuickLoader from './components/common/QuickLoader';
+import OrbitalLoader from './components/common/OrbitalLoader';
 import './App.css';
 
 function App() {
   return (
-    <LoadingProvider>
-      <BrowserRouter>
-        <PageLoader />
-        <Routes>
-          <Route path="/" element={<MainLanding />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-        </Routes>
-      </BrowserRouter>
-    </LoadingProvider>
+    <AuthProvider>
+      <LoadingProvider>
+        <BrowserRouter>
+          <PageLoader />
+          <QuickLoader />
+          <OrbitalLoader />
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/verify" element={<VerifyPage />} />
+            
+            {/* Rutas Privadas */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<DashboardPage />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </LoadingProvider>
+    </AuthProvider>
   );
 }
 
