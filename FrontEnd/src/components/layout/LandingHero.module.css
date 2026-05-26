@@ -1,0 +1,103 @@
+.heroContainer {
+  position: relative;
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background-color: var(--color-bg-main);
+  color: var(--color-text-main);
+  padding: 0 5%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  z-index: 10;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.textBlock {
+  margin-bottom: 3rem;
+}
+
+.title {
+  font-family: 'Stack Sans Notch', system-ui, sans-serif;
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  font-weight: 300;
+  line-height: 1.1;
+  margin: 0;
+  color: var(--color-text-main);
+  letter-spacing: -0.02em;
+}
+
+.lineWrap {
+  display: block;
+  overflow: hidden;
+}
+
+.line {
+  display: inline-block;
+}
+
+.highlight {
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.subtitle {
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  font-weight: 300;
+  margin-top: 1.5rem;
+  max-width: 500px;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.actionBlock {
+  margin-top: 1rem;
+}
+
+.ctaButton {
+  appearance: none;
+  background-color: transparent;
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+  padding: 1rem 2.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+}
+
+.ctaButton:hover {
+  background-color: var(--color-accent);
+  color: var(--color-bg-main);
+  box-shadow: 0 4px 20px var(--color-accent-glow);
+  transform: translateY(-2px);
+}
+
+.ctaButton:active {
+  transform: translateY(0);
+}
+
+.decorativeGlow {
+  position: absolute;
+  top: 20%;
+  right: 10%;
+  width: 40vw;
+  height: 40vw;
+  background: radial-gradient(circle, var(--color-accent-glow) 0%, transparent 70%);
+  z-index: 1;
+  pointer-events: none;
+  filter: blur(80px);
+  opacity: 0.5;
+}

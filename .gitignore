@@ -1,0 +1,11 @@
+# IDE and AI Assistant Folders
+.claude/
+CLAUDE.md
+*_config.md
+**/scripts/skills/
+.idea/
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
