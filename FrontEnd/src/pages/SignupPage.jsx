@@ -97,7 +97,7 @@ const SignupPage = () => {
         <div className="radar-circle" style={{ animationDelay: '-7s' }}></div>
       </div>
 
-      <main className="relative z-10 w-full max-w-md px-6 md:px-0 ml-0 lg:ml-[10%] flex flex-col justify-center py-12 mx-auto lg:mx-0">
+      <main className="relative z-10 w-full max-w-md px-6 md:px-0 ml-0 lg:ml-[12%] xl:ml-[15%] flex flex-col justify-center py-12 mx-auto lg:mx-0">
         {/* Animated Depth Glow Behind Form */}
         <div 
           ref={glowRef} 
@@ -190,10 +190,14 @@ const SignupPage = () => {
       <div className="pointer-events-none absolute inset-0 z-50 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] opacity-10 mix-blend-overlay"></div>
 
       {/* Return Button */}
-      <a href="/login" onClick={(e) => handleQuickNav(e, '/login')} className="absolute top-4 left-4 md:top-8 md:left-8 z-50 flex items-center gap-2 text-white/50 hover:text-pop-yellow transition-colors font-cta text-xs md:text-sm uppercase bg-black/40 md:bg-transparent px-3 py-1.5 md:p-0 rounded-full md:rounded-none backdrop-blur-md md:backdrop-blur-none border border-white/10 md:border-none cursor-pointer">
-        <span className="material-symbols-outlined text-[16px] md:text-[18px]">arrow_back</span>
-        Volver
-      </a>
+      <button 
+        onClick={(e) => handleQuickNav(e, '/login')}
+        className="absolute left-4 lg:left-8 top-6 lg:top-8 flex items-center gap-3 text-on-surface-variant hover:text-[#FFD700] transition-all duration-300 font-cta text-sm tracking-[0.2em] uppercase group z-50"
+        title="Volver al Login"
+      >
+        <span className="material-symbols-outlined text-[24px] group-hover:-translate-x-2 transition-transform duration-300">keyboard_backspace</span>
+        <span className="opacity-80 group-hover:opacity-100 transition-opacity">Volver</span>
+      </button>
     </div>
   );
 };

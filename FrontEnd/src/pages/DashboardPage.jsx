@@ -1,15 +1,9 @@
 import React, { useRef } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { useLoading } from '../context/LoadingContext';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import './DashboardPage.css';
 
 const DashboardPage = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-  const { triggerQuickTransition } = useLoading();
 
   const containerRef = useRef(null);
   const headerRef = useRef(null);
@@ -32,68 +26,6 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="bg-surface-container-lowest text-on-surface h-[100dvh] w-full overflow-hidden flex font-body-lg antialiased selection:bg-surface-variant selection:text-[#FFD700]" style={{ backgroundColor: '#0c0c0c' }}>
-      {/* Geometric Animated Background */}
-      <div className="bg-geo-wrapper w-full h-full absolute inset-0 overflow-hidden">
-        <div className="geo-polygon geo-hex top-1/4 left-[20%] scale-[1.5] opacity-[0.35]" style={{ animationDuration: '90s', borderColor: 'rgba(255, 215, 0, 0.15)' }}></div>
-        <div className="geo-polygon geo-triangle top-[60%] left-[80%] scale-[2] opacity-[0.3]" style={{ animationDirection: 'reverse', animationDuration: '110s', borderColor: 'rgba(255, 215, 0, 0.12)' }}></div>
-        <div className="geo-polygon geo-hex w-[1400px] h-[1600px] top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2" style={{ animationDelay: '-30s', opacity: 0.25, borderColor: 'rgba(255, 215, 0, 0.1)' }}></div>
-        <div className="geo-polygon geo-diamond top-[75%] left-[25%] w-[800px] h-[800px] opacity-[0.2]" style={{ animationDuration: '65s', border: '1px dashed rgba(255,215,0,0.2)' }}></div>
-        <div className="geo-polygon geo-triangle top-[10%] left-[65%] w-[600px] h-[600px] opacity-[0.35]" style={{ animationDirection: 'reverse', animationDuration: '55s', animationDelay: '-15s', borderColor: 'rgba(255, 215, 0, 0.15)' }}></div>
-      </div>
-      
-      {/* Spacer for Sidebar to prevent content overlapping when collapsed */}
-      <div className="w-[90px] shrink-0 h-full hidden lg:block z-0"></div>
-
-      {/* Sidebar Navigation */}
-      <aside className="fixed left-0 top-0 w-[90px] hover:w-[280px] h-full bg-[#0a0a0a]/95 backdrop-blur-xl border-r border-outline/10 flex flex-col items-center group-hover/sidebar:items-start py-8 z-50 transition-all duration-300 ease-in-out group/sidebar overflow-y-auto overflow-x-hidden shadow-[4px_0_24px_rgba(0,0,0,0.5)]">
-        {/* Logo */}
-        <div className="mb-12 w-full flex justify-center group-hover/sidebar:justify-start group-hover/sidebar:px-6 transition-all duration-300">
-          <div className="flex items-center">
-            <img alt="B.O.B.D.S. Logo" className="w-14 h-14 object-contain filter brightness-125 contrast-125 shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCppyL-WygC4QjNBtEJsR5RIXCmZGGk-DDfEjRaOIZmm6u2u-hUG9Lp9FXxOi9-ZS42woIqJOwYlyIpa2L2tyaabCy7zUn_Tt8Bo-utwqJwWyGBZc3DcaMJIwK2RpWnT8jN4JiNV1wGfrUHa5S-5NPEX7ve0GpRURr0qmAk4LvTrjVygnoYtNELr991O2iNk1OVM0HyLEzTnDyU_I3k_YQVzu2c0uC7xbLN1lWJQGVMBxKi0ecjRSB6HiWCWDj1g4wC32zNcU_KNQ8"/>
-            <span className="font-display font-bold text-2xl opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap text-[#e4e2e1] max-w-0 overflow-hidden group-hover/sidebar:max-w-[150px] group-hover/sidebar:ml-4 transition-all duration-300">BOBDS</span>
-          </div>
-        </div>
-        
-        {/* Nav Icons */}
-        <nav className="flex flex-col gap-6 flex-1 w-full items-center group-hover/sidebar:items-start">
-          <button className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-primary group/item transition-all duration-300 relative font-cta">
-            <span className="material-symbols-outlined icon-fill shrink-0" style={{ color: '#FFD700' }}>home</span>
-            <span className="opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap font-medium max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300" style={{ color: '#FFD700' }}>Página Principal</span>
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#FFD700] rounded-r-full shadow-[0_0_8px_rgba(255,215,0,0.4)]"></div>
-          </button>
-          <button className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 font-cta">
-            <span className="material-symbols-outlined shrink-0">list</span>
-            <span className="opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300">Listado de Unidades</span>
-          </button>
-          <button className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 font-cta">
-            <span className="material-symbols-outlined shrink-0">add_circle</span>
-            <span className="opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300">Redactar una Orden</span>
-          </button>
-          <button className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 font-cta">
-            <span className="material-symbols-outlined shrink-0">history</span>
-            <span className="opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300">Historial de Órdenes</span>
-          </button>
-          <button className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 font-cta">
-            <span className="material-symbols-outlined shrink-0">group</span>
-            <span className="opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300">Usuarios Vinculados</span>
-          </button>
-        </nav>
-        
-        {/* Settings / Logout */}
-        <div className="w-full mt-auto mb-4 flex flex-col gap-2">
-          <button className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 font-cta">
-            <span className="material-symbols-outlined shrink-0">settings</span>
-            <span className="opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300">Ajustes</span>
-          </button>
-          <button onClick={handleLogout} className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-red-500 group/item transition-all duration-300 font-cta">
-            <span className="material-symbols-outlined shrink-0">logout</span>
-            <span className="opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300">Cerrar Sesión</span>
-          </button>
-        </div>
-      </aside>
-      
-      {/* Main Workspace */}
       <main ref={containerRef} className="flex-1 h-full overflow-y-auto lg:overflow-hidden relative z-10 flex items-center justify-center p-6 pl-[110px] lg:pl-8 lg:p-8 w-full max-w-full lg:max-w-[calc(100vw-90px)]">
         <div className="max-w-7xl w-full min-h-max lg:h-full mx-auto flex flex-col gap-6 lg:gap-10 items-center justify-center py-12 lg:py-0">
           {/* Header Section */}
@@ -185,7 +117,6 @@ const DashboardPage = () => {
             </div>
           </div>
         </main>
-      </div>
   );
 };
 

@@ -205,10 +205,15 @@ const LoginPage = () => {
       <div className="pointer-events-none absolute inset-0 z-50 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] opacity-10 mix-blend-overlay"></div>
       
       {/* Return Home Button */}
-      <a href="/" onClick={(e) => handleQuickNav(e, '/')} className="absolute top-4 left-4 md:top-8 md:left-8 z-50 flex items-center gap-2 text-white/50 hover:text-pop-yellow transition-colors font-cta text-xs md:text-sm uppercase bg-black/40 md:bg-transparent px-3 py-1.5 md:p-0 rounded-full md:rounded-none backdrop-blur-md md:backdrop-blur-none border border-white/10 md:border-none cursor-pointer">
-        <span className="material-symbols-outlined text-[16px] md:text-[18px]">arrow_back</span>
-        Volver
-      </a>
+      {/* Return Button */}
+      <button 
+        onClick={(e) => handleQuickNav(e, '/')}
+        className="absolute left-8 lg:left-16 top-12 flex items-center gap-3 text-on-surface-variant hover:text-[#FFD700] transition-all duration-300 font-cta text-sm tracking-[0.2em] uppercase group z-50"
+        title="Volver"
+      >
+        <span className="material-symbols-outlined text-[24px] group-hover:-translate-x-2 transition-transform duration-300">keyboard_backspace</span>
+        <span className="opacity-80 group-hover:opacity-100 transition-opacity">Volver</span>
+      </button>
     </div>
   );
 };
