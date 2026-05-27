@@ -60,7 +60,7 @@ const Funcionalidades3D = () => {
     {
       icon: 'satellite_alt',
       title: 'Telemetría en Vivo',
-      desc: 'Monitorea la actividad de tu hogar sin levantarte del sofá. Revisa al instante el nivel de batería, la ubicación exacta en tu mapa y la tarea actual que está ejecutando cada asistente.'
+      desc: 'Monitorea la actividad de tu hogar sin levantarte del sofá. Revisa al instante el estado de la unidad, los usuarios vinculados y su actividad en tiempo real.'
     },
     {
       icon: 'manage_search',

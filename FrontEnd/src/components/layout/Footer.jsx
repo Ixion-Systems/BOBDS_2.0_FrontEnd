@@ -11,7 +11,7 @@ const Footer = () => {
               <span className="font-display font-bold text-white tracking-widest text-xl uppercase">B.O.B.D.S.</span>
             </div>
             <p className="text-white/40 max-w-sm text-sm uppercase tracking-wider font-mono">
-              © 2024 Bob do something
+              © 2026 Bob do something
             </p>
           </div>
           <div className="flex flex-wrap gap-12">
