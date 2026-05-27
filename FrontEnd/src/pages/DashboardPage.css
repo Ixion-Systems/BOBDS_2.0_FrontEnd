@@ -4,12 +4,12 @@
     overflow: hidden;
     pointer-events: none;
     z-index: 0;
-    opacity: 0.8;
+    opacity: 1;
 }
 
 .geo-polygon {
     position: absolute;
-    border: 1px solid rgba(255, 215, 0, 0.15);
+    border: 2px solid rgba(255, 215, 0, 0.3);
     animation: rotate-breathe 40s linear infinite;
 }
 
@@ -17,14 +17,13 @@
     width: 800px;
     height: 923px;
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    background: radial-gradient(circle at center, rgba(255, 215, 0, 0.05) 0%, transparent 60%);
 }
 
 .geo-triangle {
     width: 1000px;
     height: 866px;
     clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-    border: 1px solid rgba(255, 215, 0, 0.1);
+    border: 2px solid rgba(255, 215, 0, 0.25);
 }
 
 .geo-diamond {
@@ -32,9 +31,9 @@
 }
 
 @keyframes rotate-breathe {
-    0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); opacity: 0.4; }
-    50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.05); opacity: 0.8; filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.2)); }
-    100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); opacity: 0.4; }
+    0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); opacity: 0.6; }
+    50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.05); opacity: 1; }
+    100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); opacity: 0.6; }
 }
 
 .glass-panel-dashboard {

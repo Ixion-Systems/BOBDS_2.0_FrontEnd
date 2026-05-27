@@ -12,8 +12,6 @@ CONTEXT.md
 Thumbs.db
 
 # HTML Bases / Test files
-test_auth.html
-
 # Dependencies
 node_modules/
 

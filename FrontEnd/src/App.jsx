@@ -5,6 +5,9 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import VerifyPage from './pages/VerifyPage';
 import DashboardPage from './pages/DashboardPage';
+import UnitsPage from './pages/UnitsPage';
+import RegisterUnitPage from './pages/RegisterUnitPage';
+import DashboardLayout from './components/layout/DashboardLayout';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import { LoadingProvider } from './context/LoadingContext';
 import { AuthProvider } from './context/AuthContext';
@@ -29,7 +32,13 @@ function App() {
             
             {/* Rutas Privadas */}
             <Route element={<ProtectedRoute />}>
-              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/dashboard" element={<DashboardLayout />}>
+                <Route index element={<DashboardPage />} />
+                <Route path="units">
+                  <Route index element={<UnitsPage />} />
+                  <Route path="register" element={<RegisterUnitPage />} />
+                </Route>
+              </Route>
             </Route>
           </Routes>
         </BrowserRouter>

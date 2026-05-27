@@ -88,22 +88,20 @@ const QuickLoader = () => {
       ref={containerRef} 
       className="fixed inset-0 z-[99999] pointer-events-none hidden overflow-hidden"
     >
-      {/* Top Door (Slanted Bottom Edge) */}
+      {/* Top Door (Flat Bottom Edge) */}
       <div 
         ref={topDoorRef}
-        className="absolute top-0 left-0 w-full h-[65vh] bg-[#0c0c0c] flex items-end border-b-2 border-pop-yellow shadow-[0_10px_30px_rgba(255,225,0,0.2)]"
+        className="absolute top-0 left-0 w-full h-[50vh] bg-[#0c0c0c] flex items-end border-b-2 border-pop-yellow shadow-[0_10px_30px_rgba(255,225,0,0.2)]"
         style={{ 
-          clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 20vh))',
           willChange: 'transform'
         }}
       ></div>
 
-      {/* Bottom Door (Slanted Top Edge) */}
+      {/* Bottom Door (Flat Top Edge) */}
       <div 
         ref={bottomDoorRef}
-        className="absolute bottom-0 left-0 w-full h-[65vh] bg-[#0c0c0c] border-t-2 border-pop-yellow shadow-[0_-10px_30px_rgba(255,225,0,0.2)]"
+        className="absolute bottom-0 left-0 w-full h-[50vh] bg-[#0c0c0c] border-t-2 border-pop-yellow shadow-[0_-10px_30px_rgba(255,225,0,0.2)]"
         style={{ 
-          clipPath: 'polygon(0 20vh, 100% 0, 100% 100%, 0 100%)',
           willChange: 'transform'
         }}
       ></div>
