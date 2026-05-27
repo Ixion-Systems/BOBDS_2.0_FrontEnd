@@ -1,9 +1,9 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-
-// Mock Data simulando respuesta del servidor
+import { createPortal } from 'react-dom';
+import { useAuth } from '../context/AuthContext';
 const mockUnits = [
   { idUnidad: 'U-001', nombre: 'Robot Alpha', estado: 'ACTIVO', rol: 'Propietario' },
   { idUnidad: 'U-002', nombre: 'Robot Beta', estado: 'INACTIVO', rol: 'Invitado' },
@@ -36,23 +36,113 @@ const UnitsPage = () => {
   const containerRef = useRef(null);
   const headerRef = useRef(null);
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const [units, setUnits] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [unitToDelete, setUnitToDelete] = useState(null);
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
+
+  const fetchUnits = async () => {
+    if (!user?.email) return;
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/units/user?email=${encodeURIComponent(user.email)}`);
+      if (!response.ok) {
+        throw new Error('Error al obtener las unidades');
+      }
+      const data = await response.json();
+      setUnits(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUnits();
+  }, [user]);
+
+  const confirmDelete = async () => {
+    if (!unitToDelete) return;
+    setShowDeleteModal(false);
+    
+    try {
+      const response = await fetch(`/api/units/DeleteUnit/${unitToDelete.idUnidad}`, {
+        method: 'DELETE',
+      });
+      
+      if (response.ok) {
+        // Actualización optimista: removemos la unidad del estado antes de que empiece o termine la animación
+        setUnits(prev => prev.filter(u => u.idUnidad !== unitToDelete.idUnidad));
+        setShowDeleteModal(false);
+        setDeleteSuccess(true);
+      } else {
+        const errorMsg = await response.text();
+        setError(errorMsg);
+      }
+    } catch (err) {
+      setError('Error de conexión al eliminar');
+    }
+  };
 
   useGSAP(() => {
-    const tl = gsap.timeline();
-    
-    // Animar Header
-    tl.fromTo(headerRef.current, 
+    // Animar Header solo una vez
+    gsap.fromTo(headerRef.current, 
       { y: -30, opacity: 0 }, 
       { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }
     );
-    
-    // Animar Cards en Stagger
-    tl.fromTo('.unit-card', 
-      { y: 40, opacity: 0 }, 
-      { y: 0, opacity: 1, stagger: 0.15, duration: 0.6, ease: 'power2.out' }, 
-      "-=0.4"
-    );
   }, { scope: containerRef });
+
+  useGSAP(() => {
+    // Animar Cards cuando ya no se está cargando y hay unidades
+    if (!loading && units.length > 0) {
+      gsap.fromTo('.unit-card', 
+        { y: 40, opacity: 0 }, 
+        { y: 0, opacity: 1, stagger: 0.15, duration: 0.6, ease: 'power2.out' }
+      );
+    }
+  }, { scope: containerRef, dependencies: [units, loading] });
+
+  useGSAP(() => {
+    if (deleteSuccess) {
+      const tl = gsap.timeline({ 
+        onComplete: () => {
+            gsap.killTweensOf('.delete-speed-lines > div');
+            gsap.killTweensOf('.delete-speed-bg-pulse');
+            setDeleteSuccess(false);
+            setUnitToDelete(null);
+            fetchUnits();
+        } 
+      });
+
+      // Animación de Ecualizador pegado al techo (más bajo)
+      gsap.fromTo('.delete-speed-lines > div', 
+        { scaleY: 0.1 }, 
+        { scaleY: "random(0.5, 1.5)", duration: "random(0.2, 0.4)", repeat: -1, yoyo: true, ease: 'sine.inOut' } 
+      );
+      
+      // Animación de parpadeo del gradiente coordinado
+      gsap.fromTo('.delete-speed-bg-pulse', 
+        { opacity: 0.3 }, 
+        { opacity: 1, duration: 0.25, repeat: -1, yoyo: true, ease: 'sine.inOut' } 
+      );
+      
+      tl.to('.delete-circle', { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(1.7)' })
+        .to('.delete-icon', { opacity: 1, duration: 0.3 })
+        .to('.delete-circle', { borderColor: '#ef4444', boxShadow: '0 0 30px rgba(239,68,68,0.6)', duration: 0.3 })
+        .to('.delete-icon', { color: '#ef4444', textShadow: '0 0 10px rgba(239,68,68,0.8)', duration: 0.3 }, "<")
+        .to('.delete-circle', { y: -20, scale: 0.9, duration: 0.4, ease: 'power2.inOut' })
+        .to('.delete-speed-bg-wrapper', { opacity: 1, duration: 0.5 })
+        .to('.delete-speed-lines', { opacity: 1, duration: 0.5 }, "<")
+        .to('.delete-circle', { y: 1500, duration: 0.8, ease: 'power4.in' }, "-=0.2");
+        // Quitamos el fade out del overlay para que no muestre la lista vieja si hay lag
+    }
+  }, { dependencies: [deleteSuccess] });
 
   return (
     <main ref={containerRef} className="flex-1 h-[100dvh] overflow-hidden relative z-10 p-8 lg:p-12 pt-16 ml-[90px] w-[calc(100%-90px)] flex flex-col">
@@ -86,8 +176,26 @@ const UnitsPage = () => {
         {/* Unit List Content (Scrollable Area) */}
         <div className="flex-1 overflow-y-auto space-y-4 pb-12 pr-4 custom-scrollbar">
           
-          {[...mockUnits].sort((a, b) => roleWeights[b.rol] - roleWeights[a.rol]).map((unit) => {
-            const isActive = unit.estado === 'ACTIVO';
+          {loading && (
+            <div className="text-center py-10 text-on-surface-variant font-cta tracking-widest uppercase">
+              Cargando unidades...
+            </div>
+          )}
+
+          {!loading && error && (
+            <div className="text-center py-10 text-red-500 font-cta tracking-widest uppercase bg-red-500/10 rounded-lg">
+              {error}
+            </div>
+          )}
+
+          {!loading && units.length === 0 && !error && (
+            <div className="text-center py-10 text-on-surface-variant font-cta tracking-widest uppercase">
+              No tenés ninguna unidad vinculada.
+            </div>
+          )}
+
+          {!loading && [...units].sort((a, b) => (roleWeights[b.rol] || 0) - (roleWeights[a.rol] || 0)).map((unit) => {
+            const isActive = unit.estado?.toUpperCase() === 'ACTIVO';
             const roleColorClass = getRoleColor(unit.rol);
             
             // Reglas de botones
@@ -151,6 +259,7 @@ const UnitsPage = () => {
                     
                     <button 
                       disabled={!canDelete}
+                      onClick={() => { setUnitToDelete(unit); setShowDeleteModal(true); }}
                       className={`font-cta uppercase tracking-widest px-6 py-2.5 text-[11px] rounded-full border transition-all ${
                         canDelete 
                           ? 'bg-[#FF0000]/10 border-[#FF0000]/30 text-[#FF0000] hover:bg-[#FF0000] hover:text-white' 
@@ -168,6 +277,69 @@ const UnitsPage = () => {
           
         </div>
       </div>
+
+      {/* Delete Confirmation Modal en Portal */}
+      {showDeleteModal && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm">
+          <div className="glass-panel p-8 rounded-2xl border border-red-500/30 bg-[#131313]/95 flex flex-col items-center gap-6 max-w-md w-full mx-4 shadow-[0_0_50px_rgba(239,68,68,0.15)] text-center">
+            <span className="material-symbols-outlined text-red-500 text-6xl drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]">warning</span>
+            <h2 className="font-display text-2xl text-white uppercase tracking-widest">¿Eliminar Unidad?</h2>
+            <p className="font-body-md text-on-surface-variant opacity-80">
+              Estás a punto de eliminar la unidad <strong className="text-white">"{unitToDelete?.nombre}"</strong>. Esta acción revocará el acceso a todos los usuarios vinculados permanentemente.
+            </p>
+            <div className="flex gap-4 w-full mt-4">
+              <button 
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setUnitToDelete(null);
+                }}
+                className="flex-1 py-3 px-4 rounded-xl border border-outline/20 text-on-surface hover:bg-surface-variant transition-all font-cta"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={confirmDelete}
+                className="flex-1 py-3 px-4 rounded-xl bg-red-500 hover:bg-red-600 text-white shadow-[0_0_20px_rgba(239,68,68,0.3)] transition-all font-cta"
+              >
+                Sí, Eliminar
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Delete Success Overlay en Portal */}
+      {createPortal(
+        <div 
+          className={`delete-overlay-container fixed inset-0 z-[9999] flex items-center justify-center bg-black pointer-events-none ${deleteSuccess ? 'opacity-100' : 'opacity-0'}`}
+        >
+          {/* Gradiente suave amarillo (de arriba hacia abajo) con pulso */}
+          <div className="delete-speed-bg-wrapper opacity-0 pointer-events-none">
+            <div className="delete-speed-bg-pulse absolute inset-x-0 top-0 h-[60%] bg-gradient-to-b from-[#FFD700]/30 to-transparent"></div>
+          </div>
+          
+          {/* Ecualizador anclado al techo */}
+          <div className="delete-speed-lines absolute inset-x-0 top-0 h-[45%] opacity-0 pointer-events-none">
+            {Array.from({ length: 60 }).map((_, i) => (
+              <div 
+                key={i} 
+                className="absolute w-[2px] bg-white rounded-b-full opacity-30 origin-top"
+                style={{
+                  left: `${(i * 100) / 60}%`,
+                  top: 0,
+                  height: `${Math.random() * 40 + 10}%`
+                }}
+              ></div>
+            ))}
+          </div>
+
+          <div className="delete-circle w-24 h-24 rounded-full border-4 border-white flex items-center justify-center opacity-0 scale-50 shadow-[0_0_30px_rgba(255,255,255,0.4)] relative z-10">
+            <span className="material-symbols-outlined text-[48px] text-white delete-icon opacity-0 drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] z-10" style={{ textShadow: '0 0 10px rgba(255,255,255,0.8)' }}>delete</span>
+          </div>
+        </div>,
+        document.body
+      )}
     </main>
   );
 };
