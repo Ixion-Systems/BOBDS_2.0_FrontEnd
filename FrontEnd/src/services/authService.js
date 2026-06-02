@@ -76,5 +76,50 @@ export const authService = {
     } catch (error) {
       throw error;
     }
+  },
+
+  forgotPassword: async (email) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ email })
+      });
+      const result = await response.text();
+      if (!response.ok) throw new Error(result || 'Error al solicitar recuperación');
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  verifyResetCode: async (email, token) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/verify-reset-code`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ email, token })
+      });
+      const result = await response.text();
+      if (!response.ok) throw new Error(result || 'Token inválido');
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  resetPassword: async (email, token, nuevaContrasena) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/reset-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ email, token, nuevaContrasena })
+      });
+      const result = await response.text();
+      if (!response.ok) throw new Error(result || 'Error al cambiar contraseña');
+      return result;
+    } catch (error) {
+      throw error;
+    }
   }
 };
