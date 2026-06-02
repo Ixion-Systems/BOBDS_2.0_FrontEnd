@@ -4,6 +4,7 @@ import { authService } from '../services/authService';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { useLoading } from '../context/LoadingContext';
+import { useAlert } from '../context/AlertContext';
 
 const VerifyPage = () => {
   const containerRef = useRef(null);
@@ -15,6 +16,7 @@ const VerifyPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const email = location.state?.email || '';
+  const { showAlert } = useAlert();
 
   const [code, setCode] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
@@ -98,10 +100,10 @@ const VerifyPage = () => {
     setLoading(true);
     try {
       await authService.verify(email, fullCode);
-      window.alert('✅ Cuenta verificada exitosamente. Ahora puedes iniciar sesión.');
+      showAlert('Cuenta verificada exitosamente. Ahora puedes iniciar sesión.', 'success');
       triggerQuickTransition(() => navigate('/login'));
     } catch (error) {
-      window.alert('❌ Error: ' + error.message);
+      showAlert(error.message, 'error');
     } finally {
       setLoading(false);
     }
@@ -111,12 +113,12 @@ const VerifyPage = () => {
     if (timeLeft > 0) return;
     try {
       await authService.resend(email);
-      window.alert('✅ Se ha enviado un nuevo código a tu correo.');
+      showAlert('Se ha enviado un nuevo código a tu correo.', 'success');
       setTimeLeft(30);
       setCode(['', '', '', '', '', '']);
       inputRefs.current[0]?.focus();
     } catch (error) {
-      window.alert('❌ Error al reenviar: ' + error.message);
+      showAlert('Error al reenviar: ' + error.message, 'error');
     }
   };
 

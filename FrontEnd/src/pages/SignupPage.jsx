@@ -4,6 +4,7 @@ import { authService } from '../services/authService';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { useLoading } from '../context/LoadingContext';
+import { useAlert } from '../context/AlertContext';
 
 const SignupPage = () => {
   const depthElementRef = useRef(null);
@@ -14,6 +15,7 @@ const SignupPage = () => {
   const { isPageReady, triggerQuickTransition } = useLoading();
   const containerRef = useRef(null);
   const navigate = useNavigate();
+  const { showAlert } = useAlert();
 
   // Estados del Formulario
   const [formData, setFormData] = useState({ nombre: '', email: '', password: '' });
@@ -32,7 +34,7 @@ const SignupPage = () => {
       // Navegación rápida usando el iris mecánico a la nueva pantalla
       triggerQuickTransition(() => navigate('/verify', { state: { email: formData.email } }));
     } catch (error) {
-      window.alert('❌ Error: ' + error.message);
+      showAlert(error.message, 'error');
     } finally {
       setLoading(false);
     }

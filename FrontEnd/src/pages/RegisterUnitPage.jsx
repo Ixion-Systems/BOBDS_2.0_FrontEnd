@@ -150,7 +150,10 @@ const RegisterUnitPage = () => {
           <div className="flex-1 hidden sm:block"></div>
         </header>
 
-        <div className={`w-full max-w-4xl mb-auto glass-panel rounded-2xl lg:rounded-[2rem] p-4 md:p-6 lg:p-8 flex flex-col gap-4 lg:gap-6 bg-[#131313]/85 backdrop-blur-md border border-[rgba(255,215,0,0.1)] shadow-[0_12px_40px_0_rgba(0,0,0,0.8)] transition-opacity duration-500 ${success ? 'opacity-0' : 'opacity-100'}`}>
+        <div className={`w-full max-w-4xl mb-auto glass-panel rounded-2xl lg:rounded-[2rem] p-4 md:p-6 lg:p-8 flex flex-col gap-4 lg:gap-6 bg-[#131313]/85 backdrop-blur-md border border-[rgba(255,215,0,0.1)] shadow-[0_12px_40px_0_rgba(0,0,0,0.8)] relative overflow-hidden transition-opacity duration-500 ${success ? 'opacity-0' : 'opacity-100'}`}>
+          {/* Decorative Accent */}
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#FFD700] to-transparent opacity-50"></div>
+          
           <div className="flex flex-col gap-6 lg:gap-8">
             
             {errorMsg && (

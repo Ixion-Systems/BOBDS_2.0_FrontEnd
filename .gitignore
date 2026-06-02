@@ -10,13 +10,3 @@ CONTEXT.md
 # OS generated files
 .DS_Store
 Thumbs.db
-
-# HTML Bases / Test files
-# Dependencies
-node_modules/
-
-# Environment Variables (Secrets)
-.env
-.env.*
-*.local
-!.env.example

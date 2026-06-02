@@ -4,14 +4,6 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { createPortal } from 'react-dom';
 import { useAuth } from '../context/AuthContext';
-const mockUnits = [
-  { idUnidad: 'U-001', nombre: 'Robot Alpha', estado: 'ACTIVO', rol: 'Propietario' },
-  { idUnidad: 'U-002', nombre: 'Robot Beta', estado: 'INACTIVO', rol: 'Invitado' },
-  { idUnidad: 'U-003', nombre: 'Brazo Robot X1', estado: 'ACTIVO', rol: 'Operador' },
-  { idUnidad: 'U-004', nombre: 'Dron Recon', estado: 'INACTIVO', rol: 'Administrador' },
-  { idUnidad: 'U-005', nombre: 'Rover de Carga', estado: 'ACTIVO', rol: 'Co-Propietario' },
-  { idUnidad: 'U-006', nombre: 'Sistema Defensa', estado: 'INACTIVO', rol: 'Operador' },
-];
 
 const getRoleColor = (rol) => {
   switch (rol) {
@@ -152,7 +144,7 @@ const UnitsPage = () => {
           <div className="flex justify-end mb-12">
             <div className="text-right">
               <h2 className="font-display text-[56px] font-bold text-on-surface tracking-tighter opacity-90 uppercase leading-none">
-                Lista de Unidades
+                Listado de Unidades
               </h2>
               <div className="h-1.5 w-48 bg-[#FFD700] ml-auto mt-4 rounded-full shadow-[0_0_15px_#FFD700]"></div>
             </div>
