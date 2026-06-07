@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useRef } from 'react';
+import React, { createContext, useContext, useState, useRef, useEffect } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
@@ -6,43 +6,47 @@ const AlertContext = createContext();
 
 export const useAlert = () => useContext(AlertContext);
 
-export const AlertProvider = ({ children }) => {
-  const [alertConfig, setAlertConfig] = useState({ show: false, message: '', type: 'info' });
-  const modalRef = useRef(null);
+const AlertModal = ({ config, onClose }) => {
+  const bgRef = useRef(null);
+  const lineRef = useRef(null);
+  const dataRef = useRef(null);
+  const [isClosing, setIsClosing] = useState(false);
 
-  const showAlert = (message, type = 'info') => {
-    // type can be 'info', 'success', 'error'
-    // Remove emojis from old messages if they exist (e.g. "❌ Error: ...")
-    const cleanMessage = message.replace(/^[❌✅]\s*/, '');
-    setAlertConfig({ show: true, message: cleanMessage, type });
-  };
-
-  const closeAlert = () => {
-    if (modalRef.current) {
-      gsap.to(modalRef.current, {
-        opacity: 0,
-        y: 20,
-        scale: 0.95,
-        duration: 0.3,
-        ease: 'power2.in',
-        onComplete: () => setAlertConfig({ show: false, message: '', type: 'info' })
-      });
-    } else {
-      setAlertConfig({ show: false, message: '', type: 'info' });
-    }
-  };
+  useEffect(() => {
+    if (config.show) setIsClosing(false);
+  }, [config.show]);
 
   useGSAP(() => {
-    if (alertConfig.show && modalRef.current) {
-      gsap.fromTo(modalRef.current,
-        { opacity: 0, y: -50, scale: 0.9 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: 'back.out(1.7)' }
+    if (config.show && !isClosing && lineRef.current) {
+      const tl = gsap.timeline();
+      tl.fromTo(bgRef.current, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: 'power2.out' });
+      tl.fromTo(lineRef.current, 
+        { scaleX: 0, scaleY: 0.01, opacity: 0 }, 
+        { scaleX: 1, opacity: 1, duration: 0.2, ease: 'power3.out' }
+      );
+      tl.to(lineRef.current, { scaleY: 1, duration: 0.3, ease: 'power4.inOut' });
+      tl.fromTo(dataRef.current, 
+        { opacity: 0, y: 30 }, 
+        { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' },
+        "-=0.15"
       );
     }
-  }, { dependencies: [alertConfig.show], revertOnUpdate: true });
+  }, [config.show, isClosing]);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    const tl = gsap.timeline({ onComplete: () => {
+      setIsClosing(false);
+      onClose();
+    }});
+    tl.to(dataRef.current, { opacity: 0, y: 20, duration: 0.2, ease: 'power2.in' });
+    tl.to(lineRef.current, { scaleY: 0.01, duration: 0.25, ease: 'power4.inOut' });
+    tl.to(lineRef.current, { scaleX: 0, opacity: 0, duration: 0.2, ease: 'power3.in' });
+    tl.to(bgRef.current, { opacity: 0, duration: 0.2, ease: 'power2.in' }, "-=0.1");
+  };
 
   const getIcon = () => {
-    switch (alertConfig.type) {
+    switch (config.type) {
       case 'error': return 'error';
       case 'success': return 'check_circle';
       default: return 'info';
@@ -50,34 +54,53 @@ export const AlertProvider = ({ children }) => {
   };
 
   const getColorClass = () => {
-    switch (alertConfig.type) {
-      case 'error': return 'text-red-500 border-red-500/30 bg-red-500/10 shadow-[0_0_15px_rgba(239,68,68,0.2)]';
-      case 'success': return 'text-green-500 border-green-500/30 bg-green-500/10 shadow-[0_0_15px_rgba(34,197,94,0.2)]';
-      default: return 'text-pop-yellow border-pop-yellow/30 bg-pop-yellow/10 shadow-[0_0_15px_rgba(255,225,0,0.2)]';
+    switch (config.type) {
+      case 'error': return 'text-red-500 border-red-500/30 shadow-[0_0_15px_rgba(239,68,68,0.2)]';
+      case 'success': return 'text-green-500 border-green-500/30 shadow-[0_0_15px_rgba(34,197,94,0.2)]';
+      default: return 'text-pop-yellow border-pop-yellow/30 shadow-[0_0_15px_rgba(255,225,0,0.2)]';
     }
+  };
+
+  if (!config.show && !isClosing) return null;
+
+  return (
+    <div ref={bgRef} className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-auto bg-black/60 backdrop-blur-sm opacity-0" onClick={handleClose}>
+      <div 
+        ref={lineRef}
+        onClick={(e) => e.stopPropagation()}
+        className={`glass-panel w-full max-w-sm mx-4 bg-[#131313]/95 border ${getColorClass()} rounded-2xl overflow-hidden origin-center opacity-0`}
+      >
+        <div ref={dataRef} className="flex flex-col items-center p-6 opacity-0">
+          <span className={`material-symbols-outlined text-[48px] mb-4 opacity-90 ${getColorClass().split(' ')[0]}`}>{getIcon()}</span>
+          <p className="text-center font-body-md text-white mb-6 whitespace-pre-wrap">{config.message}</p>
+          <button 
+            onClick={handleClose}
+            className="px-6 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white font-label-sm uppercase tracking-widest border border-white/20"
+          >
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const AlertProvider = ({ children }) => {
+  const [alertConfig, setAlertConfig] = useState({ show: false, message: '', type: 'info' });
+
+  const showAlert = (message, type = 'info') => {
+    const cleanMessage = message.replace(/^[❌✅]\s*/, '');
+    setAlertConfig({ show: true, message: cleanMessage, type });
+  };
+
+  const closeAlert = () => {
+    setAlertConfig({ show: false, message: '', type: 'info' });
   };
 
   return (
     <AlertContext.Provider value={{ showAlert }}>
       {children}
-      {alertConfig.show && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-auto bg-black/60 backdrop-blur-sm" onClick={closeAlert}>
-          <div 
-            ref={modalRef}
-            onClick={(e) => e.stopPropagation()}
-            className={`glass-panel p-6 rounded-2xl flex flex-col items-center max-w-sm w-full mx-4 border ${getColorClass()} relative overflow-hidden`}
-          >
-            <span className="material-symbols-outlined text-[48px] mb-4 opacity-90">{getIcon()}</span>
-            <p className="text-center font-body-md text-white mb-6 whitespace-pre-wrap">{alertConfig.message}</p>
-            <button 
-              onClick={closeAlert}
-              className="px-6 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white font-label-sm uppercase tracking-widest border border-white/20"
-            >
-              Aceptar
-            </button>
-          </div>
-        </div>
-      )}
+      <AlertModal config={alertConfig} onClose={closeAlert} />
     </AlertContext.Provider>
   );
 };

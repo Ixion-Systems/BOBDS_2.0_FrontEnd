@@ -134,7 +134,16 @@ const WriteOrderPage = () => {
   const getSelectedUnitLabel = () => {
     if (!unit) return 'Selecciona una unidad...';
     const selected = units.find(u => u.idUnidad === unit);
-    return selected ? `${selected.nombre} - ${selected.idUnidad}` : 'Selecciona una unidad...';
+    if (!selected) return 'Selecciona una unidad...';
+
+    return (
+      <span className="flex items-center gap-2">
+        {selected.nombre} 
+        <span className="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-[#FFD700]/20 text-[#FFD700]">
+          ID: {selected.idUnidad}
+        </span>
+      </span>
+    );
   };
 
   return (

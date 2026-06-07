@@ -7,7 +7,9 @@ import VerifyPage from './pages/VerifyPage';
 import DashboardPage from './pages/DashboardPage';
 import UnitsPage from './pages/UnitsPage';
 import RegisterUnitPage from './pages/RegisterUnitPage';
+import LinkUnitPage from './pages/LinkUnitPage';
 import WriteOrderPage from './pages/WriteOrderPage';
+import OrderHistoryPage from './pages/OrderHistoryPage';
 import DashboardLayout from './components/layout/DashboardLayout';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import PublicRoute from './components/common/PublicRoute';
@@ -44,8 +46,10 @@ function App() {
                   <Route path="units">
                     <Route index element={<UnitsPage />} />
                     <Route path="register" element={<RegisterUnitPage />} />
+                    <Route path="link" element={<LinkUnitPage />} />
                   </Route>
                   <Route path="write-order" element={<WriteOrderPage />} />
+                  <Route path="order-history" element={<OrderHistoryPage />} />
                 </Route>
               </Route>
             </Routes>

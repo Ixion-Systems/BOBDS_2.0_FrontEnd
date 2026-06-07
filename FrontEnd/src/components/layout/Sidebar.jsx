@@ -75,9 +75,15 @@ const Sidebar = () => {
               <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#FFD700] rounded-r-full shadow-[0_0_8px_rgba(255,215,0,0.4)]"></div>
             )}
           </button>
-          <button className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 font-cta">
-            <span className="material-symbols-outlined shrink-0">history</span>
-            <span className="opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300">Historial de Órdenes</span>
+          <button 
+            onClick={() => handleNavigation('/dashboard/order-history')}
+            className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 relative font-cta"
+          >
+            <span className={`material-symbols-outlined shrink-0 transition-colors ${isActive('/dashboard/order-history') ? 'icon-fill text-[#FFD700]' : ''}`}>history</span>
+            <span className={`opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap font-medium max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300 ${isActive('/dashboard/order-history') ? 'text-[#FFD700]' : ''}`}>Historial de Órdenes</span>
+            {isActive('/dashboard/order-history') && (
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#FFD700] rounded-r-full shadow-[0_0_8px_rgba(255,215,0,0.4)]"></div>
+            )}
           </button>
           <button className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 font-cta">
             <span className="material-symbols-outlined shrink-0">group</span>

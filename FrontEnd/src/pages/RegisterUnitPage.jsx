@@ -19,6 +19,7 @@ const RegisterUnitPage = () => {
   const [copied, setCopied] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const generateCode = () => {
@@ -38,11 +39,13 @@ const RegisterUnitPage = () => {
   };
 
   const handleSubmit = async () => {
+    if (loading) return;
     if (!nombre.trim() || !idUnidad.trim() || !descripcion.trim()) {
       setErrorMsg("Todos los campos son obligatorios.");
       return;
     }
     setErrorMsg("");
+    setLoading(true);
 
     try {
       const response = await fetch('/api/units/register', {
@@ -62,11 +65,13 @@ const RegisterUnitPage = () => {
 
       if (!response.ok) {
         setErrorMsg(data);
+        setLoading(false);
       } else {
         setSuccess(true);
       }
     } catch (err) {
       setErrorMsg("Error de conexión al servidor.");
+      setLoading(false);
     }
   };
 
@@ -227,10 +232,11 @@ const RegisterUnitPage = () => {
               <div className="flex justify-center mt-2 lg:mt-0">
                 <button 
                   onClick={handleSubmit}
-                  className="bg-[#FFD700] text-black font-cta text-xs lg:text-sm px-10 lg:px-16 py-4 lg:py-5 rounded-xl hover:bg-[#FFEA00] shadow-[0_0_20px_rgba(255,215,0,0.2)] hover:shadow-[0_0_35px_rgba(255,215,0,0.6)] transition-all duration-300 flex items-center justify-center uppercase tracking-widest active:scale-95"
+                  disabled={loading}
+                  className={`bg-[#FFD700] text-black font-cta text-xs lg:text-sm px-10 lg:px-16 py-4 lg:py-5 rounded-xl transition-all duration-300 flex items-center justify-center uppercase tracking-widest ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#FFEA00] shadow-[0_0_20px_rgba(255,215,0,0.2)] hover:shadow-[0_0_35px_rgba(255,215,0,0.6)] active:scale-95'}`}
                 >
                   <span className="material-symbols-outlined mr-2 lg:mr-3 text-[18px] lg:text-[22px]">memory</span>
-                  Registrar
+                  {loading ? 'Registrando...' : 'Registrar'}
                 </button>
               </div>
             </div>
