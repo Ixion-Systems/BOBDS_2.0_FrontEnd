@@ -22,8 +22,9 @@ B.O.B.D.S. Client is the frontend application for the Base Operativa de Batalla 
 
 * **Immersive Landing Page:** A dynamic entry point with 3D canvas rendering and smooth scroll-triggered animations.
 * **Unit Management Dashboard:** A centralized hub to inspect, delete, and monitor the status of all registered robotic units in real-time.
-* **Unit Registration:** A streamlined, highly animated form to register new units and generate secure linking codes.
-* **Secure Authentication:** Seamless login and registration flows tailored for operators.
+* **Unit Registration & Linking:** A streamlined, highly animated form to register new units and securely link them to individual operators.
+* **Order Management & History:** Create and inject orders directly into units, with full traceability and history of past operations.
+* **Secure Authentication:** Seamless login and registration flows with advanced validations and anti-double-submit protections.
 * **Immersive UI/UX:** High-performance animations powered by GSAP, glowing glassmorphism aesthetics, dynamic background pulses, and responsive layouts that adapt to any terminal screen.
 
 ## Prerequisites
