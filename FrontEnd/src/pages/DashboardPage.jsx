@@ -47,35 +47,62 @@ const DashboardPage = () => {
                 </div>
                 <span className="font-label-sm text-[10px] lg:text-xs px-3 lg:px-4 py-1 lg:py-1.5 bg-[#1a1a1a] text-outline rounded border border-[#FFD700]/30 flex items-center gap-2">
                   <span className="w-1.5 h-1.5 lg:w-2 lg:h-2 rounded-full shadow-[0_0_4px_rgba(255,215,0,0.5)]" style={{ backgroundColor: '#FFD700' }}></span>
-                  V1
+                  V2
                 </span>
               </div>
               <div className="flex-1 flex flex-col gap-3 lg:gap-4 overflow-y-auto pl-1 lg:pl-2 pr-1 lg:pr-2 custom-scrollbar min-h-0">
                 {/* Update Item 1 */}
                 <div className="update-item group relative pl-4 lg:pl-5 border-l border-outline/20 hover:border-[#FFD700] transition-colors duration-300">
                   <div className="absolute -left-[6px] top-1.5 w-3 h-3 rounded-none bg-[#131313] border border-outline group-hover:bg-[#FFD700] group-hover:border-[#FFD700] transition-colors duration-300 rotate-45"></div>
-                  <span className="font-label-sm text-[10px] lg:text-[11px] tracking-[0.1em] text-outline mb-1 block uppercase text-left">Fase 1 - Landing Page</span>
-                  <h3 className="font-headline-md text-[16px] lg:text-[18px] text-on-surface mb-1 text-left">Presentación Inmersiva</h3>
+                  <span className="font-label-sm text-[10px] lg:text-[11px] tracking-[0.1em] text-outline mb-1 block uppercase text-left">Fase 4 - Seguridad y Criptografía</span>
+                  <h3 className="font-headline-md text-[16px] lg:text-[18px] text-on-surface mb-1 text-left">Hasheo SHA-256</h3>
                   <p className="font-body-lg text-[13px] lg:text-[14px] text-on-surface-variant opacity-80 leading-snug text-left">
-                    Se desarrolló la web de inicio con un diseño interactivo, animaciones fluidas y estética Glassmorphism moderna.
+                    Las contraseñas de los usuarios ahora se encriptan con algoritmos seguros. Implementación anti-doble peticiones en el Front.
                   </p>
                 </div>
                 {/* Update Item 2 */}
                 <div className="update-item group relative pl-4 lg:pl-5 border-l border-outline/20 hover:border-[#FFD700] transition-colors duration-300">
                   <div className="absolute -left-[6px] top-1.5 w-3 h-3 rounded-none bg-[#131313] border border-outline group-hover:bg-[#FFD700] group-hover:border-[#FFD700] transition-colors duration-300 rotate-45"></div>
-                  <span className="font-label-sm text-[10px] lg:text-[11px] tracking-[0.1em] text-outline mb-1 block uppercase text-left">Fase 2 - Verificación y Acceso</span>
-                  <h3 className="font-headline-md text-[16px] lg:text-[18px] text-on-surface mb-1 text-left">Identidad Segura</h3>
+                  <span className="font-label-sm text-[10px] lg:text-[11px] tracking-[0.1em] text-outline mb-1 block uppercase text-left">Fase 5 - Arquitectura Multicliente</span>
+                  <h3 className="font-headline-md text-[16px] lg:text-[18px] text-on-surface mb-1 text-left">Bloqueos Optimizados</h3>
                   <p className="font-body-lg text-[13px] lg:text-[14px] text-on-surface-variant opacity-80 leading-snug text-left">
-                    El sistema ahora cuenta con un Log In robusto y validación de doble factor (2FA) a través de correo electrónico.
+                    El backend fue reescrito usando ReentrantReadWriteLock, escalando el soporte a miles de clientes simultáneos leyendo datos sin cuellos de botella.
                   </p>
                 </div>
                 {/* Update Item 3 */}
                 <div className="update-item group relative pl-4 lg:pl-5 border-l border-outline/20 hover:border-[#FFD700] transition-colors duration-300">
                   <div className="absolute -left-[6px] top-1.5 w-3 h-3 rounded-none bg-[#131313] border border-outline group-hover:bg-[#FFD700] group-hover:border-[#FFD700] transition-colors duration-300 rotate-45"></div>
-                  <span className="font-label-sm text-[10px] lg:text-[11px] tracking-[0.1em] text-outline mb-1 block uppercase text-left">Fase 3 - Aplicativo</span>
-                  <h3 className="font-headline-md text-[16px] lg:text-[18px] text-on-surface mb-1 text-left">Centro de Mando Activo</h3>
+                  <span className="font-label-sm text-[10px] lg:text-[11px] tracking-[0.1em] text-outline mb-1 block uppercase text-left">Fase 6 - Simulador Robótico</span>
+                  <h3 className="font-headline-md text-[16px] lg:text-[18px] text-on-surface mb-1 text-left">Conexión Externa Integrada</h3>
                   <p className="font-body-lg text-[13px] lg:text-[14px] text-on-surface-variant opacity-80 leading-snug text-left">
-                    El Dashboard centraliza operaciones. Sus rutas protegidas garantizan que solo el personal autorizado pueda acceder.
+                    Bob-Do-Something ahora transmite las órdenes directamente al simulador físico local, sincronizando el estado con el hardware real.
+                  </p>
+                </div>
+                {/* Update Item 4 */}
+                <div className="update-item group relative pl-4 lg:pl-5 border-l border-outline/20 hover:border-[#FFD700] transition-colors duration-300">
+                  <div className="absolute -left-[6px] top-1.5 w-3 h-3 rounded-none bg-[#131313] border border-outline group-hover:bg-[#FFD700] group-hover:border-[#FFD700] transition-colors duration-300 rotate-45"></div>
+                  <span className="font-label-sm text-[10px] lg:text-[11px] tracking-[0.1em] text-outline mb-1 block uppercase text-left">Fase 7 - Operaciones</span>
+                  <h3 className="font-headline-md text-[16px] lg:text-[18px] text-on-surface mb-1 text-left">Añadir Órdenes</h3>
+                  <p className="font-body-lg text-[13px] lg:text-[14px] text-on-surface-variant opacity-80 leading-snug text-left">
+                    Creación e inyección de nuevas órdenes en tiempo real, validando la disponibilidad y capacidad de la unidad asignada.
+                  </p>
+                </div>
+                {/* Update Item 5 */}
+                <div className="update-item group relative pl-4 lg:pl-5 border-l border-outline/20 hover:border-[#FFD700] transition-colors duration-300">
+                  <div className="absolute -left-[6px] top-1.5 w-3 h-3 rounded-none bg-[#131313] border border-outline group-hover:bg-[#FFD700] group-hover:border-[#FFD700] transition-colors duration-300 rotate-45"></div>
+                  <span className="font-label-sm text-[10px] lg:text-[11px] tracking-[0.1em] text-outline mb-1 block uppercase text-left">Fase 8 - Auditoría</span>
+                  <h3 className="font-headline-md text-[16px] lg:text-[18px] text-on-surface mb-1 text-left">Historial de Órdenes</h3>
+                  <p className="font-body-lg text-[13px] lg:text-[14px] text-on-surface-variant opacity-80 leading-snug text-left">
+                    Trazabilidad completa. Revisa el estado histórico de cada orden completada, cancelada o en progreso desde el panel central.
+                  </p>
+                </div>
+                {/* Update Item 6 */}
+                <div className="update-item group relative pl-4 lg:pl-5 border-l border-outline/20 hover:border-[#FFD700] transition-colors duration-300">
+                  <div className="absolute -left-[6px] top-1.5 w-3 h-3 rounded-none bg-[#131313] border border-outline group-hover:bg-[#FFD700] group-hover:border-[#FFD700] transition-colors duration-300 rotate-45"></div>
+                  <span className="font-label-sm text-[10px] lg:text-[11px] tracking-[0.1em] text-outline mb-1 block uppercase text-left">Fase 9 - Gestión</span>
+                  <h3 className="font-headline-md text-[16px] lg:text-[18px] text-on-surface mb-1 text-left">Vinculación de Unidades</h3>
+                  <p className="font-body-lg text-[13px] lg:text-[14px] text-on-surface-variant opacity-80 leading-snug text-left">
+                    Relación directa y protegida. Asigna robótica Bob a usuarios específicos manteniendo aislamiento de datos entre cuentas.
                   </p>
                 </div>
               </div>
@@ -90,27 +117,27 @@ const DashboardPage = () => {
               <div className="flex-1 bg-[#1a1a1a]/50 rounded-md border border-outline/10 p-3 lg:p-5 font-mono text-[#a0a0a0] flex flex-col gap-2.5 lg:gap-4 overflow-y-auto custom-scrollbar text-[12px] lg:text-[14px] text-left lg:mt-2 min-h-0">
                   <div className="dev-note-item flex items-start gap-2.5 lg:gap-3 pb-2.5 lg:pb-4 border-b border-outline/5 hover:text-[#FFD700] transition-colors duration-300 group/note text-left shrink-0">
                     <span className="text-[#FFD700] shrink-0 mt-0.5 opacity-80 group-hover/note:opacity-100 transition-opacity">&lt;/&gt;</span>
-                    <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">Java Spring Boot:</strong> Servicio SMTP configurado para correos electrónicos.</span>
+                    <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">Criptografía SHA-256:</strong> Algoritmos hash implementados en backend para Login/Signup.</span>
                   </div>
                   <div className="dev-note-item flex items-start gap-2.5 lg:gap-3 pb-2.5 lg:pb-4 border-b border-outline/5 hover:text-[#FFD700] transition-colors duration-300 group/note text-left shrink-0">
                     <span className="text-[#FFD700] shrink-0 mt-0.5 opacity-80 group-hover/note:opacity-100 transition-opacity">&lt;/&gt;</span>
-                    <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">React Router v6:</strong> Uso de ProtectedRoute previniendo renderizados ilegales.</span>
+                    <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">ReentrantReadWriteLock:</strong> Escalabilidad masiva lograda separando lecturas y escrituras.</span>
                   </div>
                   <div className="dev-note-item flex items-start gap-2.5 lg:gap-3 pb-2.5 lg:pb-4 border-b border-outline/5 hover:text-[#FFD700] transition-colors duration-300 group/note text-left shrink-0">
                     <span className="text-[#FFD700] shrink-0 mt-0.5 opacity-80 group-hover/note:opacity-100 transition-opacity">&lt;/&gt;</span>
-                    <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">AuthContext:</strong> Bifurcación entre localStorage y sessionStorage funcional.</span>
+                    <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">Anti Double-Submit:</strong> Botones UI deshabilitados asíncronamente con loaders.</span>
                   </div>
                   <div className="dev-note-item flex items-start gap-2.5 lg:gap-3 pb-2.5 lg:pb-4 border-b border-outline/5 hover:text-[#FFD700] transition-colors duration-300 group/note text-left shrink-0">
                     <span className="text-[#FFD700] shrink-0 mt-0.5 opacity-80 group-hover/note:opacity-100 transition-opacity">&lt;/&gt;</span>
-                    <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">Jackson JSON:</strong> Implementación de @JsonInclude para ofuscación de Tokens.</span>
+                    <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">HttpClient Java:</strong> Manejo de timeouts (3s/5s) para APIs externas resilientes.</span>
                   </div>
                   <div className="dev-note-item flex items-start gap-2.5 lg:gap-3 pb-2.5 lg:pb-4 border-b border-outline/5 hover:text-[#FFD700] transition-colors duration-300 group/note text-left shrink-0">
                     <span className="text-[#FFD700] shrink-0 mt-0.5 opacity-80 group-hover/note:opacity-100 transition-opacity">&lt;/&gt;</span>
-                    <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">GSAP 3:</strong> Integrado timeline management para micro-interacciones.</span>
+                    <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">Merge & Concurrency:</strong> Resolución de conflictos Git y unificación de bloqueos Semaphore vs ReentrantLock.</span>
                   </div>
                   <div className="dev-note-item flex items-start gap-2.5 lg:gap-3 hover:text-[#FFD700] transition-colors duration-300 group/note text-left shrink-0">
                     <span className="text-[#FFD700] shrink-0 mt-0.5 opacity-80 group-hover/note:opacity-100 transition-opacity">&lt;/&gt;</span>
-                    <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">TailwindCSS:</strong> Sistema de diseño Glassmorphism estructurado globalmente.</span>
+                    <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">Cascade Delete:</strong> Integración Service-to-Service para eliminación segura de unidades y órdenes.</span>
                   </div>
                 </div>
               </div>
