@@ -27,6 +27,13 @@ const SignupPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const passwordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{3,12}$/;
+    if (!passwordRegex.test(formData.password)) {
+      showAlert('La contraseña debe tener entre 3 y 12 caracteres e incluir mayúsculas, minúsculas y números', 'error');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -153,6 +160,9 @@ const SignupPage = () => {
                   value={formData.password} onChange={handleInputChange}
                 />
               </div>
+              <p className="text-[10px] text-on-surface-variant/60 font-body-sm mt-1.5 px-1">
+                Entre 3 y 12 caracteres, al menos 1 mayúscula, 1 minúscula y 1 número.
+              </p>
             </div>
 
             <div className="pt-6">

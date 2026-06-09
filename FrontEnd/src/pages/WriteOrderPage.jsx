@@ -54,7 +54,7 @@ const WriteOrderPage = () => {
         onComplete: () => {
           gsap.killTweensOf('.fullscreen-speed-lines > div');
           gsap.killTweensOf('.speed-bg-pulse');
-          navigate('/dashboard');
+          navigate('/dashboard/orders');
         } 
       });
       
