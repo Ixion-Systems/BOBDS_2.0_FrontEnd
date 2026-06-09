@@ -25,6 +25,41 @@ const LoginPage = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [timer, setTimer] = useState(0);
   const [loading, setLoading] = useState(false);
+  const codeInputsRef = useRef([]);
+
+  const handleCodeChange = (index, value) => {
+    const numValue = value.replace(/\D/g, '');
+    if (!numValue && value !== '') {
+      let newCode = resetCode.split('');
+      newCode[index] = '';
+      setResetCode(newCode.join(''));
+      return;
+    }
+    let newCode = (resetCode || '').split('');
+    newCode[index] = numValue.slice(-1);
+    setResetCode(newCode.join(''));
+    if (numValue && index < 5 && codeInputsRef.current[index + 1]) {
+      codeInputsRef.current[index + 1].focus();
+    }
+  };
+
+  const handleCodeKeyDown = (index, e) => {
+    if (e.key === 'Backspace' && !resetCode[index] && index > 0 && codeInputsRef.current[index - 1]) {
+      codeInputsRef.current[index - 1].focus();
+    }
+  };
+
+  const handleCodePaste = (e) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    if (pastedData) {
+      setResetCode(pastedData);
+      const focusIndex = Math.min(pastedData.length, 5);
+      if (codeInputsRef.current[focusIndex]) {
+        codeInputsRef.current[focusIndex].focus();
+      }
+    }
+  };
 
   useEffect(() => {
     let interval;
@@ -107,6 +142,13 @@ const LoginPage = () => {
       showAlert('Las contraseñas no coinciden', 'error');
       return;
     }
+    
+    const passwordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{3,12}$/;
+    if (!passwordRegex.test(newPassword)) {
+      showAlert('La contraseña debe tener entre 3 y 12 caracteres e incluir mayúsculas, minúsculas y números', 'error');
+      return;
+    }
+
     setLoading(true);
     try {
       const result = await authService.resetPassword(resetEmail, resetCode, newPassword);
@@ -216,12 +258,21 @@ const LoginPage = () => {
                 <span className="material-symbols-outlined text-[14px]">pin</span>
                 Código de Verificación
               </label>
-              <div className="relative">
-                <input 
-                  className="w-full px-5 py-3.5 font-body-md text-[24px] text-center tracking-[1em] text-on-surface rounded-xl bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 focus:border-pop-yellow focus:ring-0 focus:shadow-[0_0_15px_rgba(255,225,0,0.15)] placeholder:text-on-surface-variant/30" 
-                  placeholder="000000" required type="text" maxLength="6"
-                  value={resetCode} onChange={(e) => setResetCode(e.target.value.replace(/\D/g, ''))}
-                />
+              <div className="flex gap-2 sm:gap-3 w-full justify-between" onPaste={handleCodePaste}>
+                {[0, 1, 2, 3, 4, 5].map((index) => (
+                  <input
+                    key={index}
+                    ref={(el) => codeInputsRef.current[index] = el}
+                    className="w-0 flex-1 h-12 lg:h-16 font-body-md text-[20px] lg:text-[24px] text-center text-on-surface rounded-lg lg:rounded-xl bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300 focus:border-pop-yellow focus:ring-1 focus:shadow-[0_0_15px_rgba(255,225,0,0.15)] placeholder:text-on-surface-variant/30 px-0"
+                    placeholder="0"
+                    type="text"
+                    maxLength="1"
+                    value={resetCode[index] || ''}
+                    onChange={(e) => handleCodeChange(index, e.target.value)}
+                    onKeyDown={(e) => handleCodeKeyDown(index, e)}
+                    required
+                  />
+                ))}
               </div>
             </div>
             <div className="pt-6 flex flex-col items-center gap-4">
@@ -270,6 +321,9 @@ const LoginPage = () => {
                   value={newPassword} onChange={(e) => setNewPassword(e.target.value)}
                 />
               </div>
+              <p className="text-[10px] text-on-surface-variant/60 font-body-sm mt-1.5 px-1">
+                Entre 3 y 12 caracteres, al menos 1 mayúscula, 1 minúscula y 1 número.
+              </p>
             </div>
             <div className="space-y-2">
               <label className="block font-label-sm text-label-sm text-on-surface-variant flex items-center gap-2">

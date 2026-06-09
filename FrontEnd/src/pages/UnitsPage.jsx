@@ -94,6 +94,7 @@ const ModifyUnitModal = ({ isOpen, onClose, onConfirm, unitToModify }) => {
                 type="text" 
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
+                onClick={() => { if (nombre === unitToModify?.nombre) setNombre(''); }}
                 className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white font-body-md focus:border-[#FFD700] focus:ring-1 focus:ring-[#FFD700]/50 outline-none transition-all placeholder:text-white/20"
                 placeholder="Nombre de la unidad..."
               />
@@ -103,6 +104,7 @@ const ModifyUnitModal = ({ isOpen, onClose, onConfirm, unitToModify }) => {
               <textarea 
                 value={descripcion}
                 onChange={(e) => setDescripcion(e.target.value)}
+                onClick={() => { if (descripcion === unitToModify?.descripcion) setDescripcion(''); }}
                 className="w-full h-32 bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white font-body-md focus:border-[#FFD700] focus:ring-1 focus:ring-[#FFD700]/50 outline-none transition-all resize-none placeholder:text-white/20 custom-scrollbar"
                 placeholder="Descripción de la unidad..."
               ></textarea>
@@ -523,6 +525,7 @@ const UnitsPage = () => {
 
   const [showModifyModal, setShowModifyModal] = useState(false);
   const [unitToModify, setUnitToModify] = useState(null);
+  const [modifySuccess, setModifySuccess] = useState(false);
 
   const [showUnlinkModal, setShowUnlinkModal] = useState(false);
   const [unitToUnlink, setUnitToUnlink] = useState(null);
@@ -560,7 +563,7 @@ const UnitsPage = () => {
       });
       if (response.ok) {
         setShowModifyModal(false);
-        fetchUnits(); // Refrescar lista para tener los nombres actualizados
+        setModifySuccess(true);
       } else {
         const errorMsg = await response.text();
         setError(errorMsg);
@@ -643,20 +646,22 @@ const UnitsPage = () => {
   }, { scope: containerRef, dependencies: [units, loading] });
 
   useGSAP(() => {
-    if (deleteSuccess || unlinkSuccess) {
+    if (deleteSuccess || unlinkSuccess || modifySuccess) {
       const tl = gsap.timeline({ 
         onComplete: () => {
             gsap.killTweensOf('.delete-speed-lines > div');
             gsap.killTweensOf('.delete-speed-bg-pulse');
             setDeleteSuccess(false);
             setUnlinkSuccess(false);
+            setModifySuccess(false);
             setUnitToDelete(null);
             setUnitToUnlink(null);
+            setUnitToModify(null);
             fetchUnits();
         } 
       });
 
-      // Animación de Ecualizador pegado al techo (más bajo)
+      // Animación de Ecualizador pegado al techo (más bajo) o piso según acción
       gsap.fromTo('.delete-speed-lines > div', 
         { scaleY: 0.1 }, 
         { scaleY: "random(0.5, 1.5)", duration: "random(0.2, 0.4)", repeat: -1, yoyo: true, ease: 'sine.inOut' } 
@@ -668,20 +673,23 @@ const UnitsPage = () => {
         { opacity: 1, duration: 0.25, repeat: -1, yoyo: true, ease: 'sine.inOut' } 
       );
       
-      const mainColor = unlinkSuccess ? '#f97316' : '#ef4444';
-      const glowColor = unlinkSuccess ? 'rgba(249,115,22,0.6)' : 'rgba(239,68,68,0.6)';
-      const textGlow = unlinkSuccess ? 'rgba(249,115,22,0.8)' : 'rgba(239,68,68,0.8)';
+      const mainColor = modifySuccess ? '#34d399' : (unlinkSuccess ? '#f97316' : '#ef4444');
+      const glowColor = modifySuccess ? 'rgba(52,211,153,0.6)' : (unlinkSuccess ? 'rgba(249,115,22,0.6)' : 'rgba(239,68,68,0.6)');
+      const textGlow = modifySuccess ? 'rgba(52,211,153,0.8)' : (unlinkSuccess ? 'rgba(249,115,22,0.8)' : 'rgba(239,68,68,0.8)');
+      
+      const startY = modifySuccess ? 20 : -20;
+      const endY = modifySuccess ? -1500 : 1500;
 
       tl.to('.delete-circle', { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(1.7)' })
         .to('.delete-icon', { opacity: 1, duration: 0.3 })
         .to('.delete-circle', { borderColor: mainColor, boxShadow: `0 0 30px ${glowColor}`, duration: 0.3 })
         .to('.delete-icon', { color: mainColor, textShadow: `0 0 10px ${textGlow}`, duration: 0.3 }, "<")
-        .to('.delete-circle', { y: -20, scale: 0.9, duration: 0.4, ease: 'power2.inOut' })
+        .to('.delete-circle', { y: startY, scale: 0.9, duration: 0.4, ease: 'power2.inOut' })
         .to('.delete-speed-bg-wrapper', { opacity: 1, duration: 0.5 })
         .to('.delete-speed-lines', { opacity: 1, duration: 0.5 }, "<")
-        .to('.delete-circle', { y: 1500, duration: 0.8, ease: 'power4.in' }, "-=0.2");
+        .to('.delete-circle', { y: endY, duration: 0.8, ease: 'power4.in' }, "-=0.2");
     }
-  }, { dependencies: [deleteSuccess, unlinkSuccess] });
+  }, { dependencies: [deleteSuccess, unlinkSuccess, modifySuccess] });
 
   return (
     <main ref={containerRef} className="flex-1 h-[100dvh] overflow-hidden relative z-10 p-8 lg:p-12 pt-16 ml-[90px] w-[calc(100%-90px)] flex flex-col">
@@ -878,25 +886,25 @@ const UnitsPage = () => {
         userRole={infoUnitData.role}
       />
 
-      {/* Delete/Unlink Success Overlay en Portal */}
+      {/* Delete/Unlink/Modify Success Overlay en Portal */}
       {createPortal(
         <div 
-          className={`delete-overlay-container fixed inset-0 z-[9999] flex items-center justify-center bg-black pointer-events-none ${deleteSuccess || unlinkSuccess ? 'opacity-100' : 'opacity-0'}`}
+          className={`delete-overlay-container fixed inset-0 z-[9999] flex items-center justify-center bg-black pointer-events-none ${deleteSuccess || unlinkSuccess || modifySuccess ? 'opacity-100' : 'opacity-0'}`}
         >
-          {/* Gradiente suave amarillo (de arriba hacia abajo) con pulso */}
+          {/* Gradiente suave amarillo (de arriba hacia abajo) con pulso. Para modifySuccess es de abajo hacia arriba */}
           <div className="delete-speed-bg-wrapper opacity-0 pointer-events-none">
-            <div className="delete-speed-bg-pulse absolute inset-x-0 top-0 h-[60%] bg-gradient-to-b from-[#FFD700]/30 to-transparent"></div>
+            <div className={`delete-speed-bg-pulse absolute inset-x-0 ${modifySuccess ? 'bottom-0 bg-gradient-to-t' : 'top-0 bg-gradient-to-b'} h-[60%] from-[#FFD700]/30 to-transparent`}></div>
           </div>
           
-          {/* Ecualizador anclado al techo */}
-          <div className="delete-speed-lines absolute inset-x-0 top-0 h-[45%] opacity-0 pointer-events-none">
+          {/* Ecualizador anclado al techo o piso */}
+          <div className={`delete-speed-lines absolute inset-x-0 ${modifySuccess ? 'bottom-0' : 'top-0'} h-[45%] opacity-0 pointer-events-none`}>
             {Array.from({ length: 60 }).map((_, i) => (
               <div 
                 key={i} 
-                className="absolute w-[2px] bg-white rounded-b-full opacity-30 origin-top"
+                className={`absolute w-[2px] bg-white ${modifySuccess ? 'rounded-t-full origin-bottom' : 'rounded-b-full origin-top'} opacity-30`}
                 style={{
                   left: `${(i * 100) / 60}%`,
-                  top: 0,
+                  ...(modifySuccess ? { bottom: 0 } : { top: 0 }),
                   height: `${Math.random() * 40 + 10}%`
                 }}
               ></div>
@@ -905,7 +913,7 @@ const UnitsPage = () => {
 
           <div className="delete-circle w-24 h-24 rounded-full border-4 border-white flex items-center justify-center opacity-0 scale-50 shadow-[0_0_30px_rgba(255,255,255,0.4)] relative z-10">
             <span className="material-symbols-outlined text-[48px] text-white delete-icon opacity-0 drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] z-10" style={{ textShadow: '0 0 10px rgba(255,255,255,0.8)' }}>
-              {unlinkSuccess ? 'link_off' : 'delete'}
+              {modifySuccess ? 'check' : (unlinkSuccess ? 'link_off' : 'delete')}
             </span>
           </div>
         </div>,

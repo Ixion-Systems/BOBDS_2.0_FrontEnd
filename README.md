@@ -58,7 +58,13 @@ Once the development server is running, navigate to the provided localhost port 
 
 ## Code Structure
 
-* `FrontEnd/src/components/`: Contains all React functional components and layouts.
-* `FrontEnd/src/pages/`: Contains the main route views (Dashboard, Register, Auth).
-* `FrontEnd/src/assets/`: Houses static assets like images, 3D models, and global fonts.
-* `FrontEnd/src/index.css`: Global styles including custom scrollbar behaviors and Tailwind directives.
+* `FrontEnd/src/pages/`: Primary application views and complex interfaces.
+  * `LoginPage.jsx` & `SignupPage.jsx`: Authentication, verification, and password recovery workflows.
+  * `UnitsPage.jsx`: Central dashboard for real-time unit management featuring complex GSAP animations and dynamic overlays.
+  * `WriteOrderPage.jsx`: Interfaces for dispatching payload orders to units.
+* `FrontEnd/src/components/`: Reusable UI elements, navigation bars, and structural layouts.
+* `FrontEnd/src/context/`: React context providers managing global state (`AlertContext`, `AuthContext`, `LoadingContext`).
+* `FrontEnd/src/services/`: Abstraction layer for HTTP client interactions with the backend API.
+* `FrontEnd/src/assets/`: Static resources including images, 3D models, and typography files.
+* `FrontEnd/tailwind.config.js` & `FrontEnd/postcss.config.js`: Configuration files for the Tailwind CSS utility framework.
+* `FrontEnd/src/index.css`: Global stylesheet containing Tailwind directives, CSS variables, and custom layout adjustments.
