@@ -20,12 +20,14 @@ B.O.B.D.S. Client is the frontend application for the Base Operativa de Batalla 
 
 ## Key Features
 
+* **Real-time Order & Unit History:** Live updates driven by Server-Sent Events (SSE), dynamically sorting orders chronologically via ID tiebreakers without manual refreshing.
 * **Immersive Landing Page:** A dynamic entry point with 3D canvas rendering and smooth scroll-triggered animations.
 * **Unit Management Dashboard:** A centralized hub to inspect, delete, and monitor the status of all registered robotic units in real-time.
-* **Unit Registration & Linking:** A streamlined, highly animated form to register new units and securely link them to individual operators.
-* **Order Management & History:** Create and inject orders directly into units, with full traceability and history of past operations.
+* **Unit Registration & Linking:** A streamlined, highly animated form to register new units and securely link them to individual operators using Secret Tokens.
+* **Role-Based Views:** Complex UI conditional rendering strictly governed by the operator's role hierarchy (Admin, Co-owner, Owner, Operator, Guest).
+* **Order Management & History:** Create and inject orders directly into units, with full traceability, combobox filters, and dynamic history.
 * **Secure Authentication:** Seamless login and registration flows with advanced validations and anti-double-submit protections.
-* **Immersive UI/UX:** High-performance animations powered by GSAP, glowing glassmorphism aesthetics, dynamic background pulses, and responsive layouts that adapt to any terminal screen.
+* **Immersive UI/UX:** High-performance animations powered by GSAP (including timeline-managed deletions), glowing glassmorphism aesthetics, dynamic background pulses, and responsive layouts.
 
 ## Prerequisites
 
@@ -33,6 +35,9 @@ Before running the application, ensure you have the following installed:
 * Node.js (v16.x or higher recommended)
 * npm or yarn package manager
 * The B.O.B.D.S. Backend server running locally or remotely
+
+> [!IMPORTANT]
+> A running B.O.B.D.S Backend server is strictly required. Without it, the UI will successfully load but authentication and SSE connections will fail.
 
 ## Installation
 
@@ -42,7 +47,11 @@ Before running the application, ensure you have the following installed:
    ```bash
    npm install
    ```
-4. Create a `.env` file in the root directory if environment variables are required (Vite proxies requests to the backend natively via `vite.config.js`).
+4. Create a `.env` file in the root directory if environment variables are required.
+
+   > [!NOTE]
+   > Vite proxies requests to the backend natively via `vite.config.js`, so you might not need to set the backend URL in `.env` for local development.
+
 5. Start the development server:
    ```bash
    npm run dev
@@ -55,6 +64,9 @@ Once the development server is running, navigate to the provided localhost port 
 * **Landing Page:** Introduces the ecosystem.
 * **Authentication:** Access is restricted to authorized operators.
 * **Dashboard:** The central command interface to manage units and view system status.
+
+> [!CAUTION]
+> Deleting a unit from the dashboard will permanently revoke access to all operators linked to it.
 
 ## Code Structure
 
