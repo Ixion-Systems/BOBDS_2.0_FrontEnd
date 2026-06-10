@@ -405,6 +405,11 @@ const OrderHistoryPage = () => {
         { opacity: 1, duration: 0.25, repeat: -1, yoyo: true, ease: 'sine.inOut' } 
       );
       
+      gsap.set('.delete-circle', { scale: 0.5, opacity: 0, y: 0, borderColor: '#ffffff', boxShadow: '0 0 30px rgba(255,255,255,0.4)' });
+      gsap.set('.delete-icon', { opacity: 0, color: '#ffffff', textShadow: '0 0 10px rgba(255,255,255,0.8)' });
+      gsap.set('.delete-speed-bg-wrapper', { opacity: 0 });
+      gsap.set('.delete-speed-lines', { opacity: 0 });
+
       tl.to('.delete-circle', { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(1.7)' })
         .to('.delete-icon', { opacity: 1, duration: 0.3 })
         .to('.delete-circle', { borderColor: '#ef4444', boxShadow: '0 0 30px rgba(239,68,68,0.6)', duration: 0.3 })
