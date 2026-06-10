@@ -384,6 +384,7 @@ const InfoUnitModal = ({ isOpen, onClose, unitId, userRole }) => {
   if (!isOpen && !isClosing) return null;
 
   const canGenerate = ['Propietario', 'Co-Propietario'].includes(userRole);
+  const canViewCode = ['Propietario', 'Co-Propietario', 'Administrador'].includes(userRole);
   const isExpired = unitInfo?.estadoCodigo?.includes('Vencido');
   const isCodeEmpty = unitInfo?.estadoCodigo === 'Vacío' || !unitInfo?.codVinculacion;
 
@@ -444,62 +445,64 @@ const InfoUnitModal = ({ isOpen, onClose, unitId, userRole }) => {
                 </div>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-white/10 shrink-0">
-                <div className="flex justify-between items-end mb-4">
-                  <span className="block font-display text-lg text-[#FFD700] uppercase tracking-widest">Código de Vinculación</span>
-                  {canGenerate && (
-                    <button 
-                      onClick={handleGenerateCode}
-                      disabled={loading}
-                      className="bg-[#FFD700]/10 border border-[#FFD700]/50 text-[#FFD700] font-cta text-[11px] uppercase tracking-widest px-4 py-2 rounded hover:bg-[#FFD700] hover:text-black transition-all disabled:opacity-50 flex items-center gap-2"
-                    >
-                      {loading ? 'Generando...' : 'Generar Nuevo'}
-                    </button>
-                  )}
-                </div>
-                
-                <div className="flex flex-col p-6 bg-black/40 border border-white/5 rounded-xl relative">
-                  <div className="flex justify-between items-center w-full mb-2">
-                    <span className="text-on-surface-variant text-[10px] uppercase tracking-widest">Token Secreto</span>
-                    <div className="flex gap-2">
-                        <button onClick={() => setIsCodeVisible(!isCodeVisible)} className="text-on-surface-variant hover:text-white transition-colors" title={isCodeVisible ? "Ocultar" : "Mostrar"}>
-                            <span className="material-symbols-outlined text-[18px]">{isCodeVisible ? 'visibility_off' : 'visibility'}</span>
-                        </button>
-                        <button 
-                            onClick={() => {
-                                navigator.clipboard.writeText(unitInfo.codVinculacion);
-                                setCopySuccess(true);
-                                setTimeout(() => setCopySuccess(false), 2000);
-                            }} 
-                            className="text-on-surface-variant hover:text-[#FFD700] transition-colors" 
-                            title="Copiar al portapapeles"
-                            disabled={isCodeEmpty}
-                        >
-                            <span className="material-symbols-outlined text-[18px]">{copySuccess ? 'check' : 'content_copy'}</span>
-                        </button>
+              {canViewCode && (
+                <div className="mt-8 pt-6 border-t border-white/10 shrink-0">
+                  <div className="flex justify-between items-end mb-4">
+                    <span className="block font-display text-lg text-[#FFD700] uppercase tracking-widest">Código de Vinculación</span>
+                    {canGenerate && (
+                      <button 
+                        onClick={handleGenerateCode}
+                        disabled={loading}
+                        className="bg-[#FFD700]/10 border border-[#FFD700]/50 text-[#FFD700] font-cta text-[11px] uppercase tracking-widest px-4 py-2 rounded hover:bg-[#FFD700] hover:text-black transition-all disabled:opacity-50 flex items-center gap-2"
+                      >
+                        {loading ? 'Generando...' : 'Generar Nuevo'}
+                      </button>
+                    )}
+                  </div>
+                  
+                  <div className="flex flex-col p-6 bg-black/40 border border-white/5 rounded-xl relative">
+                    <div className="flex justify-between items-center w-full mb-2">
+                      <span className="text-on-surface-variant text-[10px] uppercase tracking-widest">Token Secreto</span>
+                      <div className="flex gap-2">
+                          <button onClick={() => setIsCodeVisible(!isCodeVisible)} className="text-on-surface-variant hover:text-white transition-colors" title={isCodeVisible ? "Ocultar" : "Mostrar"}>
+                              <span className="material-symbols-outlined text-[18px]">{isCodeVisible ? 'visibility_off' : 'visibility'}</span>
+                          </button>
+                          <button 
+                              onClick={() => {
+                                  navigator.clipboard.writeText(unitInfo.codVinculacion);
+                                  setCopySuccess(true);
+                                  setTimeout(() => setCopySuccess(false), 2000);
+                              }} 
+                              className="text-on-surface-variant hover:text-[#FFD700] transition-colors" 
+                              title="Copiar al portapapeles"
+                              disabled={isCodeEmpty}
+                          >
+                              <span className="material-symbols-outlined text-[18px]">{copySuccess ? 'check' : 'content_copy'}</span>
+                          </button>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-center w-full my-2">
+                      {isCodeEmpty ? (
+                        <span className="font-mono text-2xl tracking-[0.3em] text-on-surface-variant/50">---- ---- --</span>
+                      ) : (
+                        <span className={`font-mono text-3xl tracking-[0.2em] font-bold ${isExpired ? 'text-red-500/70 line-through' : 'text-white'}`}>
+                          {isCodeVisible ? unitInfo.codVinculacion : '••-••••-••'}
+                        </span>
+                      )}
                     </div>
                   </div>
 
-                  <div className="flex justify-center w-full my-2">
-                    {isCodeEmpty ? (
-                      <span className="font-mono text-2xl tracking-[0.3em] text-on-surface-variant/50">---- ---- --</span>
-                    ) : (
-                      <span className={`font-mono text-3xl tracking-[0.2em] font-bold ${isExpired ? 'text-red-500/70 line-through' : 'text-white'}`}>
-                        {isCodeVisible ? unitInfo.codVinculacion : '••-••••-••'}
-                      </span>
-                    )}
+                  <div className="flex justify-center mt-4">
+                    <span className={`font-cta text-[10px] uppercase tracking-widest px-3 py-1 rounded-full border ${
+                      isCodeEmpty ? 'bg-white/5 border-white/10 text-on-surface-variant' :
+                      isExpired ? 'bg-red-500/10 border-red-500/30 text-red-500 shadow-[0_0_10px_rgba(239,68,68,0.2)]' : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.2)]'
+                    }`}>
+                      {unitInfo.estadoCodigo}
+                    </span>
                   </div>
                 </div>
-
-                <div className="flex justify-center mt-4">
-                  <span className={`font-cta text-[10px] uppercase tracking-widest px-3 py-1 rounded-full border ${
-                    isCodeEmpty ? 'bg-white/5 border-white/10 text-on-surface-variant' :
-                    isExpired ? 'bg-red-500/10 border-red-500/30 text-red-500 shadow-[0_0_10px_rgba(239,68,68,0.2)]' : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.2)]'
-                  }`}>
-                    {unitInfo.estadoCodigo}
-                  </span>
-                </div>
-              </div>
+              )}
             </div>
           )}
         </div>
@@ -577,6 +580,22 @@ const UnitsPage = () => {
 
   useEffect(() => {
     fetchUnits();
+
+    const eventSource = new EventSource('/api/stream');
+
+    eventSource.addEventListener('unit_update', (event) => {
+      console.log('Unit updated via SSE:', event.data);
+      fetchUnits();
+    });
+
+    eventSource.onerror = (error) => {
+      console.error('SSE Error in UnitsPage:', error);
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
   }, [user]);
 
   const confirmDelete = async () => {

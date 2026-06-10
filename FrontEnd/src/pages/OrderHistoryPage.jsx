@@ -235,6 +235,11 @@ const OrderHistoryPage = () => {
   const [loadingOrders, setLoadingOrders] = useState(false);
   const [error, setError] = useState(null);
 
+  const [sortOrder, setSortOrder] = useState('newest');
+  const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
+  const sortDropdownRef = useRef(null);
+  const [triggerFetch, setTriggerFetch] = useState(0);
+
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [orderToDelete, setOrderToDelete] = useState(null);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
@@ -243,11 +248,14 @@ const OrderHistoryPage = () => {
   const [selectedOrderInfo, setSelectedOrderInfo] = useState(null);
   const [loadingInfo, setLoadingInfo] = useState(false);
 
-  // Cerrar dropdown al hacer click fuera
+  // Cerrar dropdowns al hacer click fuera
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
+      }
+      if (sortDropdownRef.current && !sortDropdownRef.current.contains(event.target)) {
+        setSortDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -298,7 +306,25 @@ const OrderHistoryPage = () => {
     if (selectedUnitId) {
       fetchOrders(selectedUnitId);
     }
-  }, [selectedUnitId]);
+  }, [selectedUnitId, triggerFetch]);
+
+  useEffect(() => {
+    const eventSource = new EventSource('/api/stream');
+
+    eventSource.addEventListener('order_update', (event) => {
+      console.log('Order updated via SSE:', event.data);
+      setTriggerFetch(prev => prev + 1);
+    });
+
+    eventSource.onerror = (error) => {
+      console.error('SSE Error in OrderHistoryPage:', error);
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, []);
 
   const confirmDelete = async () => {
     if (!orderToDelete) return;
@@ -357,6 +383,8 @@ const OrderHistoryPage = () => {
 
   useGSAP(() => {
     if (deleteSuccess) {
+      gsap.set(['.delete-circle', '.delete-icon', '.delete-speed-bg-wrapper', '.delete-speed-lines'], { clearProps: 'all' });
+
       const tl = gsap.timeline({ 
         onComplete: () => {
             gsap.killTweensOf('.delete-speed-lines > div');
@@ -416,51 +444,89 @@ const OrderHistoryPage = () => {
             </div>
           </div>
           
-          <div className="flex items-center gap-6 mb-8 w-full max-w-lg">
-            <span className="font-display text-xl text-on-surface font-bold uppercase tracking-widest shrink-0">Unidad:</span>
-            <div className="relative flex-1 group" ref={dropdownRef}>
-              <div 
-                onClick={() => { if (!loading && units.length > 0) setDropdownOpen(!dropdownOpen); }}
-                className={`w-full bg-[#000000]/50 border ${dropdownOpen ? 'border-[#FFD700] ring-1 ring-[#FFD700]/20' : 'border-white/20 hover:border-[#FFD700]/50'} text-on-surface font-display text-sm lg:text-body-md rounded-xl py-4 pl-5 pr-12 transition-all cursor-pointer flex items-center justify-between select-none ${loading || units.length === 0 ? 'opacity-50 pointer-events-none' : ''}`}
-              >
-                <span className={!selectedUnitId ? 'text-surface-container-highest' : 'text-on-surface'}>
-                  {getSelectedUnitLabel()}
-                </span>
-              </div>
-              
-              <div className={`pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 ${dropdownOpen ? 'text-[#FFD700]' : 'text-[#FFD700]/60 group-hover:text-[#FFD700]'} transition-colors`}>
-                <span className={`material-symbols-outlined transition-transform duration-300 ${dropdownOpen ? 'rotate-180' : ''}`}>expand_more</span>
-              </div>
-              
-              {dropdownOpen && (
-                <div className="absolute z-[100] mt-2 w-full bg-[#0a0a0a] border border-[#FFD700]/30 rounded-xl shadow-[0_15px_50px_rgba(0,0,0,0.9)] overflow-hidden max-h-40 overflow-y-auto custom-scrollbar flex flex-col animate-in fade-in slide-in-from-top-2 duration-200">
-                  <div className="p-2 space-y-1">
-                    {units.length === 0 ? (
-                      <div className="px-4 py-3 text-sm text-on-surface-variant/70 italic font-display text-center">No tienes unidades registradas</div>
-                    ) : (
-                      units.map((u) => (
-                        <div 
-                          key={u.idUnidad} 
-                          onClick={() => {
-                            setSelectedUnitId(u.idUnidad);
-                            setDropdownOpen(false);
-                          }}
-                          className={`cursor-pointer px-4 py-3 rounded-lg font-display text-sm transition-all flex items-center gap-3 ${
-                            selectedUnitId === u.idUnidad 
-                              ? 'bg-[#FFD700]/20 text-[#FFD700] border border-[#FFD700]/30' 
-                              : 'text-on-surface hover:bg-white/10 border border-transparent'
-                          }`}
-                        >
-                          <div className={`w-2 h-2 rounded-full transition-all ${selectedUnitId === u.idUnidad ? 'bg-[#FFD700] shadow-[0_0_8px_#FFD700]' : 'bg-white/20'}`}></div>
-                          <span className="flex items-center gap-2">
-                            {u.nombre} 
-                            <span className={`font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded ${selectedUnitId === u.idUnidad ? 'bg-[#FFD700]/20 text-[#FFD700]' : 'bg-white/10 text-on-surface-variant'}`}>
-                              ID: {u.idUnidad}
+          <div className="flex justify-between items-center mb-8 w-full pr-4">
+            <div className="flex items-center gap-6 w-full max-w-lg">
+              <span className="font-display text-xl text-on-surface font-bold uppercase tracking-widest shrink-0">Unidad:</span>
+              <div className="relative flex-1 group" ref={dropdownRef}>
+                <div 
+                  onClick={() => { if (!loading && units.length > 0) setDropdownOpen(!dropdownOpen); }}
+                  className={`w-full bg-[#000000]/50 border ${dropdownOpen ? 'border-[#FFD700] ring-1 ring-[#FFD700]/20' : 'border-white/20 hover:border-[#FFD700]/50'} text-on-surface font-display text-sm lg:text-body-md rounded-xl py-4 pl-5 pr-12 transition-all cursor-pointer flex items-center justify-between select-none ${loading || units.length === 0 ? 'opacity-50 pointer-events-none' : ''}`}
+                >
+                  <span className={!selectedUnitId ? 'text-surface-container-highest' : 'text-on-surface'}>
+                    {getSelectedUnitLabel()}
+                  </span>
+                </div>
+                
+                <div className={`pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 ${dropdownOpen ? 'text-[#FFD700]' : 'text-[#FFD700]/60 group-hover:text-[#FFD700]'} transition-colors`}>
+                  <span className={`material-symbols-outlined transition-transform duration-300 ${dropdownOpen ? 'rotate-180' : ''}`}>expand_more</span>
+                </div>
+                
+                {dropdownOpen && (
+                  <div className="absolute z-[100] mt-2 w-full bg-[#0a0a0a] border border-[#FFD700]/30 rounded-xl shadow-[0_15px_50px_rgba(0,0,0,0.9)] overflow-hidden max-h-40 overflow-y-auto custom-scrollbar flex flex-col animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="p-2 space-y-1">
+                      {units.length === 0 ? (
+                        <div className="px-4 py-3 text-sm text-on-surface-variant/70 italic font-display text-center">No tienes unidades registradas</div>
+                      ) : (
+                        units.map((u) => (
+                          <div 
+                            key={u.idUnidad} 
+                            onClick={() => {
+                              setSelectedUnitId(u.idUnidad);
+                              setDropdownOpen(false);
+                            }}
+                            className={`cursor-pointer px-4 py-3 rounded-lg font-display text-sm transition-all flex items-center gap-3 ${
+                              selectedUnitId === u.idUnidad 
+                                ? 'bg-[#FFD700]/20 text-[#FFD700] border border-[#FFD700]/30' 
+                                : 'text-on-surface hover:bg-white/10 border border-transparent'
+                            }`}
+                          >
+                            <div className={`w-2 h-2 rounded-full transition-all ${selectedUnitId === u.idUnidad ? 'bg-[#FFD700] shadow-[0_0_8px_#FFD700]' : 'bg-white/20'}`}></div>
+                            <span className="flex items-center gap-2">
+                              {u.nombre} 
+                              <span className={`font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded ${selectedUnitId === u.idUnidad ? 'bg-[#FFD700]/20 text-[#FFD700]' : 'bg-white/10 text-on-surface-variant'}`}>
+                                ID: {u.idUnidad}
+                              </span>
                             </span>
-                          </span>
-                        </div>
-                      ))
-                    )}
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="relative w-48 group z-[60]" ref={sortDropdownRef}>
+              <div 
+                onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
+                className={`w-full bg-[#000000]/50 border ${sortDropdownOpen ? 'border-[#FFD700] ring-1 ring-[#FFD700]/20' : 'border-white/20 hover:border-[#FFD700]/50'} text-on-surface font-display text-sm rounded-xl py-3 pl-4 pr-10 transition-all cursor-pointer flex items-center justify-between select-none shadow-[0_0_15px_rgba(255,255,255,0.05)]`}
+              >
+                <span className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-lg text-[#FFD700]">sort</span>
+                  {sortOrder === 'newest' ? 'Más Nuevo' : 'Más Antiguo'}
+                </span>
+                <span className={`material-symbols-outlined absolute right-3 transition-transform duration-300 ${sortDropdownOpen ? 'rotate-180 text-[#FFD700]' : 'text-white/50 group-hover:text-[#FFD700]'}`}>expand_more</span>
+              </div>
+              
+              {sortDropdownOpen && (
+                <div className="absolute right-0 z-[100] mt-2 w-full bg-[#0a0a0a] border border-[#FFD700]/30 rounded-xl shadow-[0_15px_50px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="p-2 space-y-1">
+                    <div 
+                      onClick={() => { setSortOrder('newest'); setSortDropdownOpen(false); }}
+                      className={`cursor-pointer px-4 py-2 rounded-lg font-display text-sm transition-all flex items-center gap-3 ${
+                        sortOrder === 'newest' ? 'bg-[#FFD700]/20 text-[#FFD700]' : 'text-on-surface hover:bg-white/10'
+                      }`}
+                    >
+                      Más Nuevo
+                    </div>
+                    <div 
+                      onClick={() => { setSortOrder('oldest'); setSortDropdownOpen(false); }}
+                      className={`cursor-pointer px-4 py-2 rounded-lg font-display text-sm transition-all flex items-center gap-3 ${
+                        sortOrder === 'oldest' ? 'bg-[#FFD700]/20 text-[#FFD700]' : 'text-on-surface hover:bg-white/10'
+                      }`}
+                    >
+                      Más Antiguo
+                    </div>
                   </div>
                 </div>
               )}
@@ -488,12 +554,31 @@ const OrderHistoryPage = () => {
             </div>
           )}
 
-          {!loadingOrders && orders.map((order) => {
+          {!loadingOrders && [...orders].sort((a, b) => {
+            const statusWeight = { 'EN COLA': 1, 'EN CURSO': 2, 'FINALIZADA': 3 };
+            const sA = statusWeight[a.estado?.toUpperCase()] || 4;
+            const sB = statusWeight[b.estado?.toUpperCase()] || 4;
+            
+            if (sA !== sB) {
+              return sA - sB;
+            }
+            
+            const parseDate = (dStr) => dStr ? new Date(dStr.replace(' ', 'T')).getTime() : 0;
+            const tA = a.createdAtMs || parseDate(a.fechaHora) || 0;
+            const tB = b.createdAtMs || parseDate(b.fechaHora) || 0;
+            
+            if (tA !== tB) {
+              return sortOrder === 'newest' ? tB - tA : tA - tB;
+            }
+            
+            // Tiebreaker: idOrden
+            return sortOrder === 'newest' ? b.idOrden - a.idOrden : a.idOrden - b.idOrden;
+          }).map((order) => {
             const statusStyle = getStatusColor(order.estado);
 
             return (
               <div key={order.idOrden} className="order-card glass-panel group overflow-hidden p-4 px-6 transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,215,0,0.08)] border border-[rgba(255,215,0,0.1)] border-l-4 rounded-xl backdrop-blur-md bg-[#131313]/60 border-l-outline/30 opacity-80 hover:opacity-100">
-                <div className="grid grid-cols-[1fr_180px_250px] items-center gap-4 w-full">
+                <div className="grid grid-cols-[1fr_220px_auto] items-center gap-6 md:gap-10 w-full">
                   
                   <h3 
                     title={order.orden}
