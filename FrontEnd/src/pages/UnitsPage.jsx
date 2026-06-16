@@ -436,6 +436,12 @@ const InfoUnitModal = ({ isOpen, onClose, unitId, userRole }) => {
                     <span className="block font-body-md text-on-surface-variant text-[11px] uppercase tracking-widest opacity-60 mb-1">ID Unidad</span>
                     <span className="font-mono text-sm text-[#FFD700] bg-[#FFD700]/10 px-3 py-1.5 rounded border border-[#FFD700]/20 inline-block">{unitInfo.idUnidad}</span>
                   </div>
+                  <div>
+                    <span className="block font-body-md text-on-surface-variant text-[11px] uppercase tracking-widest opacity-60 mb-1">Fecha de Creación</span>
+                    <span className="font-mono text-sm text-white bg-white/10 px-3 py-1.5 rounded border border-white/20 inline-block">
+                      {unitInfo.createdAtMs ? new Date(unitInfo.createdAtMs).toLocaleString() : 'Desconocida'}
+                    </span>
+                  </div>
                 </div>
                 
                 {/* Columna Derecha */}
@@ -581,7 +587,7 @@ const UnitsPage = () => {
   useEffect(() => {
     fetchUnits();
 
-    const eventSource = new EventSource('/api/stream');
+    const eventSource = new EventSource('/api/stream', { withCredentials: true });
 
     eventSource.addEventListener('unit_update', (event) => {
       console.log('Unit updated via SSE:', event.data);

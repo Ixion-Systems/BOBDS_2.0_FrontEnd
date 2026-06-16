@@ -24,6 +24,15 @@ export const AuthProvider = ({ children }) => {
     return null;
   });
 
+  const [isAdminMode, setIsAdminMode] = useState(() => {
+    return localStorage.getItem('isAdminMode') === 'true';
+  });
+
+  const setAdminMode = (mode) => {
+    setIsAdminMode(mode);
+    localStorage.setItem('isAdminMode', mode);
+  };
+
   const login = (userData, keepSession) => {
     setUser(userData);
     if (keepSession) {
@@ -40,12 +49,13 @@ export const AuthProvider = ({ children }) => {
       console.error('Logout error', e);
     }
     setUser(null);
+    setAdminMode(false);
     localStorage.removeItem('user');
     sessionStorage.removeItem('user');
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, setUser, login, logout, isAdminMode, setIsAdminMode: setAdminMode }}>
       {children}
     </AuthContext.Provider>
   );
