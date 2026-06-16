@@ -105,6 +105,12 @@ const InfoModal = ({ isOpen, onClose, loading, orderInfo }) => {
                       </span>
                     </div>
                   </div>
+                  <div className="col-span-2">
+                    <span className="block font-label-sm text-xs text-on-surface-variant uppercase tracking-widest mb-1">Fecha y Hora</span>
+                    <span className="font-mono text-white text-md bg-white/5 px-3 py-1 rounded border border-white/10 inline-block">
+                      {orderInfo.createdAtMs ? new Date(orderInfo.createdAtMs).toLocaleString() : (orderInfo.fechaHora || 'Desconocida')}
+                    </span>
+                  </div>
                 </div>
                 
                 <div>
@@ -309,7 +315,7 @@ const OrderHistoryPage = () => {
   }, [selectedUnitId, triggerFetch]);
 
   useEffect(() => {
-    const eventSource = new EventSource('/api/stream');
+    const eventSource = new EventSource('/api/stream', { withCredentials: true });
 
     eventSource.addEventListener('order_update', (event) => {
       console.log('Order updated via SSE:', event.data);
@@ -585,12 +591,17 @@ const OrderHistoryPage = () => {
               <div key={order.idOrden} className="order-card glass-panel group overflow-hidden p-4 px-6 transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,215,0,0.08)] border border-[rgba(255,215,0,0.1)] border-l-4 rounded-xl backdrop-blur-md bg-[#131313]/60 border-l-outline/30 opacity-80 hover:opacity-100">
                 <div className="grid grid-cols-[1fr_220px_auto] items-center gap-6 md:gap-10 w-full">
                   
-                  <h3 
-                    title={order.orden}
-                    className="font-display text-xl group-hover:translate-x-2 transition-transform duration-300 font-bold pr-4 text-left text-on-surface group-hover:text-[#FFD700] whitespace-nowrap overflow-hidden text-ellipsis"
-                  >
-                    {order.orden.length > 50 ? order.orden.substring(0, 50) + '...' : order.orden}
-                  </h3>
+                  <div className="flex flex-col justify-center">
+                    <h3 
+                      title={order.orden}
+                      className="font-display text-xl group-hover:translate-x-2 transition-transform duration-300 font-bold pr-4 text-left text-on-surface group-hover:text-[#FFD700] whitespace-nowrap overflow-hidden text-ellipsis"
+                    >
+                      {order.orden.length > 50 ? order.orden.substring(0, 50) + '...' : order.orden}
+                    </h3>
+                    <span className="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest mt-1 opacity-60 group-hover:translate-x-2 transition-transform duration-300">
+                      {order.createdAtMs ? new Date(order.createdAtMs).toLocaleString() : (order.fechaHora || 'Desconocida')}
+                    </span>
+                  </div>
                   
                   <div className="flex items-center gap-3">
                     <span className="font-body-md text-on-surface-variant text-[11px] uppercase tracking-widest opacity-60">Estado:</span>

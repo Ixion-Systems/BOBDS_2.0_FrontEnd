@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useLoading } from '../../context/LoadingContext';
 
 const Sidebar = () => {
-  const { logout } = useAuth();
+  const { logout, isAdminMode } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { triggerQuickTransition } = useLoading();
@@ -45,57 +45,101 @@ const Sidebar = () => {
         
         {/* Nav Icons */}
         <nav className="flex flex-col gap-6 flex-1 w-full items-center group-hover/sidebar:items-start">
-          <button 
-            onClick={() => handleNavigation('/dashboard')}
-            className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 relative font-cta"
-          >
-            <span className={`material-symbols-outlined shrink-0 transition-colors ${isActive('/dashboard') ? 'icon-fill text-[#FFD700]' : ''}`}>home</span>
-            <span className={`opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap font-medium max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300 ${isActive('/dashboard') ? 'text-[#FFD700]' : ''}`}>Página Principal</span>
-            {isActive('/dashboard') && (
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#FFD700] rounded-r-full shadow-[0_0_8px_rgba(255,215,0,0.4)]"></div>
-            )}
-          </button>
-          <button 
-            onClick={() => handleNavigation('/dashboard/units')}
-            className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 relative font-cta"
-          >
-            <span className={`material-symbols-outlined shrink-0 transition-colors ${isActive('/dashboard/units') ? 'icon-fill text-[#FFD700]' : ''}`}>list</span>
-            <span className={`opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap font-medium max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300 ${isActive('/dashboard/units') ? 'text-[#FFD700]' : ''}`}>Listado de Unidades</span>
-            {isActive('/dashboard/units') && (
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#FFD700] rounded-r-full shadow-[0_0_8px_rgba(255,215,0,0.4)]"></div>
-            )}
-          </button>
-          <button 
-            onClick={() => handleNavigation('/dashboard/write-order')}
-            className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 relative font-cta"
-          >
-            <span className={`material-symbols-outlined shrink-0 transition-colors ${isActive('/dashboard/write-order') ? 'icon-fill text-[#FFD700]' : ''}`}>add_circle</span>
-            <span className={`opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap font-medium max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300 ${isActive('/dashboard/write-order') ? 'text-[#FFD700]' : ''}`}>Redactar una Orden</span>
-            {isActive('/dashboard/write-order') && (
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#FFD700] rounded-r-full shadow-[0_0_8px_rgba(255,215,0,0.4)]"></div>
-            )}
-          </button>
-          <button 
-            onClick={() => handleNavigation('/dashboard/order-history')}
-            className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 relative font-cta"
-          >
-            <span className={`material-symbols-outlined shrink-0 transition-colors ${isActive('/dashboard/order-history') ? 'icon-fill text-[#FFD700]' : ''}`}>history</span>
-            <span className={`opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap font-medium max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300 ${isActive('/dashboard/order-history') ? 'text-[#FFD700]' : ''}`}>Historial de Órdenes</span>
-            {isActive('/dashboard/order-history') && (
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#FFD700] rounded-r-full shadow-[0_0_8px_rgba(255,215,0,0.4)]"></div>
-            )}
-          </button>
-          <button className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 font-cta">
-            <span className="material-symbols-outlined shrink-0">group</span>
-            <span className="opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300">Usuarios Vinculados</span>
-          </button>
+          {!isAdminMode ? (
+            <>
+              <button 
+                onClick={() => handleNavigation('/dashboard')}
+                className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 relative font-cta"
+              >
+                <span className={`material-symbols-outlined shrink-0 transition-colors ${isActive('/dashboard') && !isActive('/dashboard/units') && !isActive('/dashboard/write-order') && !isActive('/dashboard/order-history') && !isActive('/dashboard/settings') ? 'icon-fill text-[#FFD700]' : ''}`}>home</span>
+                <span className={`opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap font-medium max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300 ${isActive('/dashboard') && !isActive('/dashboard/units') && !isActive('/dashboard/write-order') && !isActive('/dashboard/order-history') && !isActive('/dashboard/settings') ? 'text-[#FFD700]' : ''}`}>Página Principal</span>
+                {isActive('/dashboard') && !isActive('/dashboard/units') && !isActive('/dashboard/write-order') && !isActive('/dashboard/order-history') && !isActive('/dashboard/settings') && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#FFD700] rounded-r-full shadow-[0_0_8px_rgba(255,215,0,0.4)]"></div>
+                )}
+              </button>
+              <button 
+                onClick={() => handleNavigation('/dashboard/units')}
+                className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 relative font-cta"
+              >
+                <span className={`material-symbols-outlined shrink-0 transition-colors ${isActive('/dashboard/units') ? 'icon-fill text-[#FFD700]' : ''}`}>list</span>
+                <span className={`opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap font-medium max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300 ${isActive('/dashboard/units') ? 'text-[#FFD700]' : ''}`}>Listado de Unidades</span>
+                {isActive('/dashboard/units') && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#FFD700] rounded-r-full shadow-[0_0_8px_rgba(255,215,0,0.4)]"></div>
+                )}
+              </button>
+              <button 
+                onClick={() => handleNavigation('/dashboard/write-order')}
+                className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 relative font-cta"
+              >
+                <span className={`material-symbols-outlined shrink-0 transition-colors ${isActive('/dashboard/write-order') ? 'icon-fill text-[#FFD700]' : ''}`}>add_circle</span>
+                <span className={`opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap font-medium max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300 ${isActive('/dashboard/write-order') ? 'text-[#FFD700]' : ''}`}>Redactar una Orden</span>
+                {isActive('/dashboard/write-order') && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#FFD700] rounded-r-full shadow-[0_0_8px_rgba(255,215,0,0.4)]"></div>
+                )}
+              </button>
+              <button 
+                onClick={() => handleNavigation('/dashboard/order-history')}
+                className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 relative font-cta"
+              >
+                <span className={`material-symbols-outlined shrink-0 transition-colors ${isActive('/dashboard/order-history') ? 'icon-fill text-[#FFD700]' : ''}`}>history</span>
+                <span className={`opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap font-medium max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300 ${isActive('/dashboard/order-history') ? 'text-[#FFD700]' : ''}`}>Historial de Órdenes</span>
+                {isActive('/dashboard/order-history') && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#FFD700] rounded-r-full shadow-[0_0_8px_rgba(255,215,0,0.4)]"></div>
+                )}
+              </button>
+              <button className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 font-cta">
+                <span className="material-symbols-outlined shrink-0">group</span>
+                <span className="opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300">Usuarios Vinculados</span>
+              </button>
+            </>
+          ) : (
+            <>
+              {/* Admin Mode Nav Links */}
+              <button 
+                onClick={() => handleNavigation('/dashboard/admin')}
+                className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 relative font-cta"
+              >
+                <span className={`material-symbols-outlined shrink-0 transition-colors ${isActive('/dashboard/admin') && !isActive('/dashboard/admin/monitoreo') && !isActive('/dashboard/admin/usuarios') ? 'icon-fill text-[#FFD700]' : ''}`}>dashboard</span>
+                <span className={`opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap font-medium max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300 ${isActive('/dashboard/admin') && !isActive('/dashboard/admin/monitoreo') && !isActive('/dashboard/admin/usuarios') ? 'text-[#FFD700]' : ''}`}>Consola de Control</span>
+                {isActive('/dashboard/admin') && !isActive('/dashboard/admin/monitoreo') && !isActive('/dashboard/admin/usuarios') && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#FFD700] rounded-r-full shadow-[0_0_8px_rgba(255,215,0,0.4)]"></div>
+                )}
+              </button>
+              <button 
+                onClick={() => handleNavigation('/dashboard/admin/monitoreo')}
+                className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 relative font-cta"
+              >
+                <span className={`material-symbols-outlined shrink-0 transition-colors ${isActive('/dashboard/admin/monitoreo') ? 'icon-fill text-[#FFD700]' : ''}`}>monitor_heart</span>
+                <span className={`opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap font-medium max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300 ${isActive('/dashboard/admin/monitoreo') ? 'text-[#FFD700]' : ''}`}>Monitoreo</span>
+                {isActive('/dashboard/admin/monitoreo') && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#FFD700] rounded-r-full shadow-[0_0_8px_rgba(255,215,0,0.4)]"></div>
+                )}
+              </button>
+              <button 
+                onClick={() => handleNavigation('/dashboard/admin/usuarios')}
+                className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 relative font-cta"
+              >
+                <span className={`material-symbols-outlined shrink-0 transition-colors ${isActive('/dashboard/admin/usuarios') ? 'icon-fill text-[#FFD700]' : ''}`}>manage_accounts</span>
+                <span className={`opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap font-medium max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300 ${isActive('/dashboard/admin/usuarios') ? 'text-[#FFD700]' : ''}`}>Usuarios</span>
+                {isActive('/dashboard/admin/usuarios') && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#FFD700] rounded-r-full shadow-[0_0_8px_rgba(255,215,0,0.4)]"></div>
+                )}
+              </button>
+            </>
+          )}
         </nav>
         
         {/* Settings / Logout */}
         <div className="w-full mt-auto mb-4 flex flex-col gap-2">
-          <button className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 font-cta">
-            <span className="material-symbols-outlined shrink-0">settings</span>
-            <span className="opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300">Ajustes</span>
+          <button 
+            onClick={() => handleNavigation('/dashboard/settings')}
+            className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-[#FFD700] group/item transition-all duration-300 relative font-cta"
+          >
+            <span className={`material-symbols-outlined shrink-0 transition-colors ${isActive('/dashboard/settings') ? 'icon-fill text-[#FFD700]' : ''}`}>settings</span>
+            <span className={`opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap font-medium max-w-0 overflow-hidden group-hover/sidebar:max-w-[200px] group-hover/sidebar:ml-4 transition-all duration-300 ${isActive('/dashboard/settings') ? 'text-[#FFD700]' : ''}`}>Ajustes</span>
+            {isActive('/dashboard/settings') && (
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#FFD700] rounded-r-full shadow-[0_0_8px_rgba(255,215,0,0.4)]"></div>
+            )}
           </button>
           <button onClick={handleLogout} className="w-full flex items-center justify-center group-hover/sidebar:justify-start px-0 group-hover/sidebar:px-6 py-3 text-outline hover:text-red-500 group/item transition-all duration-300 font-cta">
             <span className="material-symbols-outlined shrink-0">logout</span>

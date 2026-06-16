@@ -19,7 +19,10 @@ import { AlertProvider } from './context/AlertContext';
 import PageLoader from './components/common/PageLoader';
 import QuickLoader from './components/common/QuickLoader';
 import OrbitalLoader from './components/common/OrbitalLoader';
-
+import SettingsPage from './pages/SettingsPage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
+import AdminMonitorPage from './pages/AdminMonitorPage';
+import AdminUsersPage from './pages/AdminUsersPage';
 
 function App() {
   return (
@@ -50,6 +53,13 @@ function App() {
                   </Route>
                   <Route path="write-order" element={<WriteOrderPage />} />
                   <Route path="order-history" element={<OrderHistoryPage />} />
+                  <Route path="settings" element={<SettingsPage />} />
+                  {/* Rutas Admin */}
+                  <Route path="admin">
+                    <Route index element={<AdminDashboardPage />} />
+                    <Route path="monitoreo" element={<AdminMonitorPage />} />
+                    <Route path="usuarios" element={<AdminUsersPage />} />
+                  </Route>
                 </Route>
               </Route>
             </Routes>
