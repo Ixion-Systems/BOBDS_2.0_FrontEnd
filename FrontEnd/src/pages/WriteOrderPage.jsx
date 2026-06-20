@@ -6,6 +6,82 @@ import { createPortal } from 'react-dom';
 import { useAlert } from '../context/AlertContext';
 import { useAuth } from '../context/AuthContext';
 
+/* Modal de Confirmación de Envío */
+const ConfirmOrderModal = ({ isOpen, onClose, onConfirm, orderDetails }) => {
+  const bgRef = useRef(null);
+  const lineRef = useRef(null);
+  const dataRef = useRef(null);
+  const [isClosing, setIsClosing] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) setIsClosing(false);
+  }, [isOpen]);
+
+  useGSAP(() => {
+    if (isOpen && !isClosing && lineRef.current) {
+      const tl = gsap.timeline();
+      tl.fromTo(bgRef.current, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: 'power2.out' });
+      tl.fromTo(lineRef.current, 
+        { scaleX: 0, scaleY: 0.01, opacity: 0 }, 
+        { scaleX: 1, opacity: 1, duration: 0.2, ease: 'power3.out' }
+      );
+      tl.to(lineRef.current, { scaleY: 1, duration: 0.3, ease: 'power4.inOut' });
+      tl.fromTo(dataRef.current, 
+        { opacity: 0, y: 30 }, 
+        { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' },
+        "-=0.15"
+      );
+    }
+  }, [isOpen, isClosing]);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    const tl = gsap.timeline({ onComplete: () => {
+      setIsClosing(false);
+      onClose();
+    }});
+    tl.to(dataRef.current, { opacity: 0, y: 20, duration: 0.2, ease: 'power2.in' });
+    tl.to(lineRef.current, { scaleY: 0.01, duration: 0.25, ease: 'power4.inOut' });
+    tl.to(lineRef.current, { scaleX: 0, opacity: 0, duration: 0.2, ease: 'power3.in' });
+    tl.to(bgRef.current, { opacity: 0, duration: 0.2, ease: 'power2.in' }, "-=0.1");
+  };
+
+  if (!isOpen && !isClosing) return null;
+
+  return createPortal(
+    <div ref={bgRef} className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm opacity-0 p-4">
+      <div 
+        ref={lineRef}
+        className="glass-panel w-full max-w-md bg-[#131313]/95 border border-[#FFD700]/30 rounded-2xl shadow-[0_0_50px_rgba(255,215,0,0.15)] overflow-hidden origin-center opacity-0"
+      >
+        <div ref={dataRef} className="flex flex-col items-center gap-6 p-8 text-center opacity-0">
+          <span className="material-symbols-outlined text-[#FFD700] text-6xl drop-shadow-[0_0_15px_rgba(255,215,0,0.8)]">send</span>
+          <h2 className="font-display text-2xl text-white uppercase tracking-widest">¿Enviar Orden?</h2>
+          <p className="font-body-md text-on-surface-variant opacity-80">
+            Estás a punto de enviar la directiva <strong className="text-[#FFD700]">"{orderDetails?.orden}"</strong> a la unidad seleccionada.
+          </p>
+          <div className="flex gap-4 w-full mt-4">
+            <button 
+              onClick={handleClose}
+              className="flex-1 py-3 px-4 rounded-xl border border-outline/20 text-on-surface hover:bg-surface-variant transition-all font-cta"
+            >
+              Cancelar
+            </button>
+            <button 
+              onClick={() => { handleClose(); onConfirm(); }}
+              className="flex-1 py-3 px-4 rounded-xl bg-[#FFD700]/10 border border-[#FFD700]/50 hover:bg-[#FFD700] text-[#FFD700] hover:text-black shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:shadow-[0_0_25px_rgba(255,215,0,0.3)] transition-all font-cta uppercase tracking-widest"
+            >
+              Confirmar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
+};
+
+/* Página Principal */
 const WriteOrderPage = () => {
   const containerRef = useRef(null);
   const cardRef = useRef(null);
@@ -21,8 +97,9 @@ const WriteOrderPage = () => {
   
   const [success, setSuccess] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  // Cerrar dropdown al hacer click fuera
+  /* Cierre del Dropdown al Hacer Clic Fuera */
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -54,7 +131,10 @@ const WriteOrderPage = () => {
         onComplete: () => {
           gsap.killTweensOf('.fullscreen-speed-lines > div');
           gsap.killTweensOf('.speed-bg-pulse');
-          navigate('/dashboard/order-history');
+          setSuccess(false);
+          setUnit('');
+          setDirective('');
+          setNotes('');
         } 
       });
       
@@ -99,12 +179,15 @@ const WriteOrderPage = () => {
 
   }, { scope: containerRef });
 
-  const handleTransmit = async () => {
+  const handleTransmitClick = () => {
     if (!unit || !directive.trim()) {
       showAlert('Por favor selecciona una unidad y escribe una orden.', 'error');
       return;
     }
+    setShowConfirmModal(true);
+  };
 
+  const confirmTransmit = async () => {
     try {
       const response = await fetch('/api/orders/register', {
         method: 'POST',
@@ -278,7 +361,7 @@ const WriteOrderPage = () => {
                 <span className="text-[10px] font-mono text-on-surface-variant">Conexión cifrada de extremo a extremo.</span>
               </div>
               <button 
-                onClick={handleTransmit}
+                onClick={handleTransmitClick}
                 disabled={!hasUnits}
                 className={`font-cta text-xs lg:text-sm px-8 lg:px-12 py-4 rounded-xl transition-all duration-300 flex items-center justify-center uppercase tracking-widest group w-full md:w-auto ${
                   hasUnits 
@@ -326,6 +409,14 @@ const WriteOrderPage = () => {
         </div>,
         document.body
       )}
+
+      {/* Modal de Confirmación */}
+      <ConfirmOrderModal 
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={confirmTransmit}
+        orderDetails={{ orden: directive }}
+      />
     </main>
   );
 };

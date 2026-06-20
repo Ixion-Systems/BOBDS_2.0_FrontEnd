@@ -745,7 +745,7 @@ const UnitsPage = () => {
             </button>
             <button 
               onClick={() => navigate('/dashboard/units/link')}
-              className="px-10 py-4 bg-[#1a1a1a]/60 border border-outline/30 text-on-surface font-cta rounded-lg hover:border-outline/80 hover:bg-[#2a2a2a]/80 transition-all duration-300 active:scale-95 shadow-xl uppercase tracking-[0.15em] text-sm font-bold flex items-center gap-3"
+              className="px-10 py-4 bg-[#1a1a1a]/[0.85] backdrop-blur-md/60 border border-outline/30 text-on-surface font-cta rounded-lg hover:border-outline/80 hover:bg-[#2a2a2a]/80 transition-all duration-300 active:scale-95 shadow-xl uppercase tracking-[0.15em] text-sm font-bold flex items-center gap-3"
             >
               <span className="material-symbols-outlined text-lg">link</span>
               Vincular Unidad

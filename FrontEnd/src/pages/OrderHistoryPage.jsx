@@ -5,22 +5,24 @@ import { useGSAP } from '@gsap/react';
 import { createPortal } from 'react-dom';
 import { useAuth } from '../context/AuthContext';
 
+/* Utilidades de Color de Estado */
 const getStatusColor = (estado) => {
   switch (estado?.toUpperCase()) {
     case 'EN COLA': return { bg: 'bg-red-500', shadow: 'shadow-[0_0_15px_#ef4444]', text: 'text-red-500', wrapper: 'bg-red-500/10 border-red-500/20' };
     case 'EN CURSO': return { bg: 'bg-orange-500', shadow: 'shadow-[0_0_15px_#f97316]', text: 'text-orange-500', wrapper: 'bg-orange-500/10 border-orange-500/20' };
     case 'FINALIZADA': return { bg: 'bg-emerald-400', shadow: 'shadow-[0_0_15px_#34d399]', text: 'text-emerald-400', wrapper: 'bg-emerald-500/10 border-emerald-500/20' };
+    case 'CANCELADA': return { bg: 'bg-red-700', shadow: 'shadow-[0_0_15px_#b91c1c]', text: 'text-red-500 font-bold', wrapper: 'bg-red-900/30 border-red-500/50' };
     default: return { bg: 'bg-gray-500', shadow: 'shadow-none', text: 'text-gray-400', wrapper: 'bg-gray-500/10 border-gray-500/20' };
   }
 };
 
+/* Modal Información de Orden */
 const InfoModal = ({ isOpen, onClose, loading, orderInfo }) => {
   const bgRef = useRef(null);
   const lineRef = useRef(null);
   const dataRef = useRef(null);
   const [isClosing, setIsClosing] = useState(false);
 
-  // Reset isClosing when reopened
   useEffect(() => {
     if (isOpen) {
       setIsClosing(false);
@@ -105,16 +107,34 @@ const InfoModal = ({ isOpen, onClose, loading, orderInfo }) => {
                       </span>
                     </div>
                   </div>
-                  <div className="col-span-2">
-                    <span className="block font-label-sm text-xs text-on-surface-variant uppercase tracking-widest mb-1">Fecha y Hora</span>
-                    <span className="font-mono text-white text-md bg-white/5 px-3 py-1 rounded border border-white/10 inline-block">
+                  <div className="col-span-2 sm:col-span-1">
+                    <span className="block font-label-sm text-xs text-on-surface-variant uppercase tracking-widest mb-1">Emisión</span>
+                    <span className="font-mono text-white text-sm bg-white/5 px-2 py-1 rounded border border-white/10 inline-block">
                       {orderInfo.createdAtMs ? new Date(orderInfo.createdAtMs).toLocaleString() : (orderInfo.fechaHora || 'Desconocida')}
+                    </span>
+                  </div>
+                  <div className="col-span-2 sm:col-span-1">
+                    <span className="block font-label-sm text-xs text-on-surface-variant uppercase tracking-widest mb-1">Finalización</span>
+                    <span className="font-mono text-[#FFD700] text-sm bg-[#FFD700]/10 px-2 py-1 rounded border border-[#FFD700]/20 inline-block">
+                      {orderInfo.finishedAtMs ? new Date(orderInfo.finishedAtMs).toLocaleString() : 'En proceso...'}
+                    </span>
+                  </div>
+                  <div className="col-span-2 sm:col-span-1">
+                    <span className="block font-label-sm text-xs text-on-surface-variant uppercase tracking-widest mb-1">Tiempo Transcurrido</span>
+                    <span className="font-mono text-white text-sm bg-white/5 px-2 py-1 rounded border border-white/10 inline-block">
+                      {orderInfo.durationMs ? `${(orderInfo.durationMs / 1000).toFixed(1)} s` : '-'}
+                    </span>
+                  </div>
+                  <div className="col-span-2 sm:col-span-1">
+                    <span className="block font-label-sm text-xs text-on-surface-variant uppercase tracking-widest mb-1">Remitente</span>
+                    <span className="font-mono text-white text-sm bg-white/5 px-2 py-1 rounded border border-white/10 inline-block truncate max-w-full" title={orderInfo.userEmail || 'Sistema'}>
+                      {orderInfo.userEmail || 'Sistema'}
                     </span>
                   </div>
                 </div>
                 
                 <div>
-                  <span className="block font-label-sm text-xs text-on-surface-variant uppercase tracking-widest mb-1">Directiva</span>
+                  <span className="block font-label-sm text-xs text-on-surface-variant uppercase tracking-widest mb-1">Orden</span>
                   <div className="bg-[#000000]/50 border border-white/10 rounded-xl p-4 text-on-surface font-display text-lg">
                     {orderInfo.orden}
                   </div>
@@ -140,7 +160,8 @@ const InfoModal = ({ isOpen, onClose, loading, orderInfo }) => {
   );
 };
 
-const DeleteOrderModal = ({ isOpen, onClose, onConfirm, orderToDelete }) => {
+/* Modal de Acción (Eliminar / Cancelar) */
+const ActionOrderModal = ({ isOpen, onClose, onConfirm, orderTarget, actionType }) => {
   const bgRef = useRef(null);
   const lineRef = useRef(null);
   const dataRef = useRef(null);
@@ -193,30 +214,36 @@ const DeleteOrderModal = ({ isOpen, onClose, onConfirm, orderToDelete }) => {
 
   if (!isOpen && !isClosing) return null;
 
+  const isCancel = actionType === 'cancel';
+
   return createPortal(
     <div ref={bgRef} className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm opacity-0 p-4">
       <div 
         ref={lineRef}
-        className="glass-panel w-full max-w-md bg-[#131313]/95 border border-red-500/30 rounded-2xl shadow-[0_0_50px_rgba(239,68,68,0.15)] overflow-hidden origin-center opacity-0"
+        className={`glass-panel w-full max-w-md bg-[#131313]/95 border ${isCancel ? 'border-orange-500/30 shadow-[0_0_50px_rgba(249,115,22,0.15)]' : 'border-red-500/30 shadow-[0_0_50px_rgba(239,68,68,0.15)]'} rounded-2xl overflow-hidden origin-center opacity-0`}
       >
         <div ref={dataRef} className="flex flex-col items-center gap-6 p-8 text-center opacity-0">
-          <span className="material-symbols-outlined text-red-500 text-6xl drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]">warning</span>
-          <h2 className="font-display text-2xl text-white uppercase tracking-widest">¿Eliminar Orden?</h2>
+          <span className={`material-symbols-outlined ${isCancel ? 'text-orange-500 drop-shadow-[0_0_15px_rgba(249,115,22,0.8)]' : 'text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]'} text-6xl`}>{isCancel ? 'stop_circle' : 'warning'}</span>
+          <h2 className="font-display text-2xl text-white uppercase tracking-widest">{isCancel ? '¿Cancelar Orden?' : '¿Eliminar Orden?'}</h2>
           <p className="font-body-md text-on-surface-variant opacity-80">
-            Estás a punto de eliminar la orden <strong className="text-white">#{orderToDelete?.idOrden}</strong>. Esta acción es irreversible y borrará el registro del historial.
+            {isCancel ? (
+              <>Estás a punto de cancelar la orden <strong className="text-white">#{orderTarget?.idOrden}</strong>. Esta acción detendrá su ejecución pero mantendrá el registro en el historial para auditoría.</>
+            ) : (
+              <>Estás a punto de eliminar la orden <strong className="text-white">#{orderTarget?.idOrden}</strong>. Esta acción es irreversible y borrará el registro del historial.</>
+            )}
           </p>
           <div className="flex gap-4 w-full mt-4">
             <button 
               onClick={handleClose}
               className="flex-1 py-3 px-4 rounded-xl border border-outline/20 text-on-surface hover:bg-surface-variant transition-all font-cta"
             >
-              Cancelar
+              Cerrar
             </button>
             <button 
               onClick={handleConfirm}
-              className="flex-1 py-3 px-4 rounded-xl bg-red-500 hover:bg-red-600 text-white shadow-[0_0_20px_rgba(239,68,68,0.3)] transition-all font-cta"
+              className={`flex-1 py-3 px-4 rounded-xl text-white transition-all font-cta ${isCancel ? 'bg-orange-500 hover:bg-orange-600 shadow-[0_0_20px_rgba(249,115,22,0.3)]' : 'bg-red-500 hover:bg-red-600 shadow-[0_0_20px_rgba(239,68,68,0.3)]'}`}
             >
-              Sí, Eliminar
+              {isCancel ? 'Sí, Cancelar' : 'Sí, Eliminar'}
             </button>
           </div>
         </div>
@@ -225,6 +252,8 @@ const DeleteOrderModal = ({ isOpen, onClose, onConfirm, orderToDelete }) => {
     document.body
   );
 };
+
+/* Componente Principal de Historial */
 
 const OrderHistoryPage = () => {
   const containerRef = useRef(null);
@@ -246,15 +275,16 @@ const OrderHistoryPage = () => {
   const sortDropdownRef = useRef(null);
   const [triggerFetch, setTriggerFetch] = useState(0);
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [orderToDelete, setOrderToDelete] = useState(null);
-  const [deleteSuccess, setDeleteSuccess] = useState(false);
+  const [showActionModal, setShowActionModal] = useState(false);
+  const [orderTarget, setOrderTarget] = useState(null);
+  const [actionType, setActionType] = useState('delete'); // 'delete' o 'cancel'
+  const [actionSuccess, setActionSuccess] = useState(false);
 
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [selectedOrderInfo, setSelectedOrderInfo] = useState(null);
   const [loadingInfo, setLoadingInfo] = useState(false);
 
-  // Cerrar dropdowns al hacer click fuera
+  /* Animacion de Cierre Fuera del Dropdown */
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -269,8 +299,9 @@ const OrderHistoryPage = () => {
   }, []);
 
   const selectedUnit = units.find(u => u.idUnidad === selectedUnitId);
-  const canDelete = selectedUnit && !['Invitado', 'Operador'].includes(selectedUnit.rol);
+  const canModify = selectedUnit && !['Invitado', 'Operador'].includes(selectedUnit.rol);
 
+  /* Fetch de Unidades */
   useEffect(() => {
     const fetchUnits = async () => {
       if (!user?.email) return;
@@ -308,12 +339,14 @@ const OrderHistoryPage = () => {
     }
   };
 
+  /* Ejecución de Fetch según Selección */
   useEffect(() => {
     if (selectedUnitId) {
       fetchOrders(selectedUnitId);
     }
   }, [selectedUnitId, triggerFetch]);
 
+  /* Conexión de Eventos SSE */
   useEffect(() => {
     const eventSource = new EventSource('/api/stream', { withCredentials: true });
 
@@ -332,28 +365,42 @@ const OrderHistoryPage = () => {
     };
   }, []);
 
-  const confirmDelete = async () => {
-    if (!orderToDelete) return;
-    setShowDeleteModal(false);
+  /* Acción de Confirmar Modal (Eliminar/Cancelar) */
+  const confirmAction = async () => {
+    if (!orderTarget) return;
+    setShowActionModal(false);
     
     try {
-      const response = await fetch(`/api/orders/${orderToDelete.idOrden}`, {
-        method: 'DELETE',
-      });
-      
-      if (response.ok) {
-        setOrders(prev => prev.filter(o => o.idOrden !== orderToDelete.idOrden));
-        setShowDeleteModal(false);
-        setDeleteSuccess(true);
-      } else {
-        const errorMsg = await response.text();
-        setError(errorMsg);
+      if (actionType === 'delete') {
+        const response = await fetch(`/api/orders/${orderTarget.idOrden}`, {
+          method: 'DELETE',
+        });
+        
+        if (response.ok) {
+          setOrders(prev => prev.filter(o => o.idOrden !== orderTarget.idOrden));
+          setActionSuccess(true);
+        } else {
+          const errorMsg = await response.text();
+          setError(errorMsg);
+        }
+      } else if (actionType === 'cancel') {
+        const response = await fetch(`/api/orders/${orderTarget.idOrden}/cancel`, {
+          method: 'POST',
+        });
+
+        if (response.ok) {
+          fetchOrders(selectedUnitId); // Refrescar para ver el estado de cancelada y sus datos
+        } else {
+          const errorMsg = await response.text();
+          setError(errorMsg);
+        }
       }
     } catch (err) {
-      setError('Error de conexión al eliminar');
+      setError(`Error de conexión al ${actionType === 'cancel' ? 'cancelar' : 'eliminar'}`);
     }
   };
 
+  /* Manejador del Botón Ver Info */
   const handleVerInfo = async (idOrden) => {
     try {
       setLoadingInfo(true);
@@ -371,6 +418,7 @@ const OrderHistoryPage = () => {
     }
   };
 
+  /* Animaciones GSAP Iniciales */
   useGSAP(() => {
     gsap.fromTo(headerRef.current, 
       { y: -30, opacity: 0 }, 
@@ -387,16 +435,17 @@ const OrderHistoryPage = () => {
     }
   }, { scope: containerRef, dependencies: [orders, loadingOrders] });
 
+  /* Animación Especial de Eliminación (Acción Exitosa) */
   useGSAP(() => {
-    if (deleteSuccess) {
+    if (actionSuccess && actionType === 'delete') {
       gsap.set(['.delete-circle', '.delete-icon', '.delete-speed-bg-wrapper', '.delete-speed-lines'], { clearProps: 'all' });
 
       const tl = gsap.timeline({ 
         onComplete: () => {
             gsap.killTweensOf('.delete-speed-lines > div');
             gsap.killTweensOf('.delete-speed-bg-pulse');
-            setDeleteSuccess(false);
-            setOrderToDelete(null);
+            setActionSuccess(false);
+            setOrderTarget(null);
             fetchOrders(selectedUnitId);
         } 
       });
@@ -425,7 +474,7 @@ const OrderHistoryPage = () => {
         .to('.delete-speed-lines', { opacity: 1, duration: 0.5 }, "<")
         .to('.delete-circle', { y: 1500, duration: 0.8, ease: 'power4.in' }, "-=0.2");
     }
-  }, { dependencies: [deleteSuccess] });
+  }, { dependencies: [actionSuccess, actionType] });
 
   const getSelectedUnitLabel = () => {
     if (!selectedUnitId) return 'Selecciona una unidad...';
@@ -586,6 +635,7 @@ const OrderHistoryPage = () => {
             return sortOrder === 'newest' ? b.idOrden - a.idOrden : a.idOrden - b.idOrden;
           }).map((order) => {
             const statusStyle = getStatusColor(order.estado);
+            const isCancelable = order.estado?.toUpperCase() === 'EN COLA' || order.estado?.toUpperCase() === 'EN CURSO';
 
             return (
               <div key={order.idOrden} className="order-card glass-panel group overflow-hidden p-4 px-6 transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,215,0,0.08)] border border-[rgba(255,215,0,0.1)] border-l-4 rounded-xl backdrop-blur-md bg-[#131313]/60 border-l-outline/30 opacity-80 hover:opacity-100">
@@ -613,7 +663,7 @@ const OrderHistoryPage = () => {
                     </div>
                   </div>
 
-                  <div className="flex gap-3 justify-self-end">
+                  <div className="flex gap-3 justify-self-end items-center">
                     <button 
                       onClick={() => handleVerInfo(order.idOrden)}
                       className="bg-black/50 border border-white/10 font-cta uppercase tracking-widest text-on-surface hover:bg-[#FFD700] hover:text-black hover:border-[#FFD700] transition-all px-6 py-2.5 text-[11px] rounded-full"
@@ -621,18 +671,35 @@ const OrderHistoryPage = () => {
                       Ver Info
                     </button>
                     
-                    <button 
-                      disabled={!canDelete}
-                      onClick={() => { setOrderToDelete(order); setShowDeleteModal(true); }}
-                      className={`font-cta uppercase tracking-widest px-6 py-2.5 text-[11px] rounded-full border transition-all ${
-                        canDelete 
-                          ? 'bg-[#FF0000]/10 border-[#FF0000]/30 text-[#FF0000] hover:bg-[#FF0000] hover:text-white' 
-                          : 'bg-white/5 border-white/5 text-white/20 cursor-not-allowed'
-                      }`}
-                      title={!canDelete ? 'No tienes permisos para eliminar órdenes en esta unidad' : ''}
-                    >
-                      Eliminar
-                    </button>
+                    {isCancelable ? (
+                      <button 
+                        disabled={!canModify}
+                        onClick={() => { setOrderTarget(order); setActionType('cancel'); setShowActionModal(true); }}
+                        className={`font-cta flex items-center gap-1 uppercase tracking-widest px-4 py-2.5 text-[11px] rounded-full border transition-all ${
+                          canModify 
+                            ? 'bg-orange-500/10 border-orange-500/30 text-orange-500 hover:bg-orange-500 hover:text-white' 
+                            : 'bg-white/5 border-white/5 text-white/20 cursor-not-allowed'
+                        }`}
+                        title={!canModify ? 'No tienes permisos para operar órdenes en esta unidad' : 'Detener orden'}
+                      >
+                        <span className="material-symbols-outlined text-[14px]">stop_circle</span>
+                        Cancelar
+                      </button>
+                    ) : (
+                      <button 
+                        disabled={!canModify}
+                        onClick={() => { setOrderTarget(order); setActionType('delete'); setShowActionModal(true); }}
+                        className={`font-cta flex items-center gap-1 uppercase tracking-widest px-4 py-2.5 text-[11px] rounded-full border transition-all ${
+                          canModify 
+                            ? 'bg-[#FF0000]/10 border-[#FF0000]/30 text-[#FF0000] hover:bg-[#FF0000] hover:text-white' 
+                            : 'bg-white/5 border-white/5 text-white/20 cursor-not-allowed'
+                        }`}
+                        title={!canModify ? 'No tienes permisos para modificar el historial' : 'Eliminar registro'}
+                      >
+                        <span className="material-symbols-outlined text-[14px]">delete</span>
+                        Eliminar
+                      </button>
+                    )}
                   </div>
 
                 </div>
@@ -643,6 +710,7 @@ const OrderHistoryPage = () => {
         </div>
       </div>
 
+      {/* Modales Compartidos */}
       <InfoModal 
         isOpen={showInfoModal} 
         onClose={() => setShowInfoModal(false)} 
@@ -650,21 +718,21 @@ const OrderHistoryPage = () => {
         orderInfo={selectedOrderInfo} 
       />
 
-      {/* Delete Confirmation Modal */}
-      <DeleteOrderModal
-        isOpen={showDeleteModal}
+      <ActionOrderModal
+        isOpen={showActionModal}
         onClose={() => {
-          setShowDeleteModal(false);
-          setOrderToDelete(null);
+          setShowActionModal(false);
+          setOrderTarget(null);
         }}
-        onConfirm={confirmDelete}
-        orderToDelete={orderToDelete}
+        onConfirm={confirmAction}
+        orderTarget={orderTarget}
+        actionType={actionType}
       />
 
-      {/* Delete Success Overlay */}
+      {/* Animación Overlay de Eliminación */}
       {createPortal(
         <div 
-          className={`delete-overlay-container fixed inset-0 z-[9999] flex items-center justify-center bg-black pointer-events-none ${deleteSuccess ? 'opacity-100' : 'opacity-0'}`}
+          className={`delete-overlay-container fixed inset-0 z-[9999] flex items-center justify-center bg-black pointer-events-none ${actionSuccess && actionType === 'delete' ? 'opacity-100' : 'opacity-0'}`}
         >
           <div className="delete-speed-bg-wrapper opacity-0 pointer-events-none">
             <div className="delete-speed-bg-pulse absolute inset-x-0 top-0 h-[60%] bg-gradient-to-b from-[#FFD700]/30 to-transparent"></div>
