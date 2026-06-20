@@ -47,7 +47,7 @@ const SettingsPage = () => {
         <p className="text-outline mt-2 font-body text-lg">Configuración de tu cuenta y preferencias del sistema.</p>
       </div>
 
-      <div className="bg-[#121212] rounded-2xl border border-outline/10 p-6 flex flex-col gap-6">
+      <div className="bg-[#121212]/[0.85] backdrop-blur-md rounded-2xl border border-outline/10 p-6 flex flex-col gap-6">
         <div>
           <h2 className="text-2xl font-display font-semibold text-white mb-2">Perfil</h2>
           <p className="text-outline">Sesión iniciada como: <span className="text-[#FFD700]">{user?.email}</span></p>
@@ -59,7 +59,7 @@ const SettingsPage = () => {
           isAdmin && (
             <div className="border-t border-outline/10 pt-6">
               <h2 className="text-2xl font-display font-semibold text-white mb-4">Opciones de Administrador</h2>
-              <div className="bg-[#1a1a1a] p-4 rounded-xl border border-[#FFD700]/20 flex items-center justify-between">
+              <div className="bg-[#1a1a1a]/[0.85] backdrop-blur-md p-4 rounded-xl border border-[#FFD700]/20 flex items-center justify-between">
                 <div>
                   <h3 className="text-white font-medium text-lg">Panel de Administración</h3>
                   <p className="text-outline text-sm">Accede a las herramientas de monitoreo y control de usuarios.</p>

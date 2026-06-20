@@ -1,8 +1,20 @@
 import React, { useEffect, useState, useRef } from 'react';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 
 const AdminDashboardPage = () => {
   const [logs, setLogs] = useState([]);
   const logsEndRef = useRef(null);
+  const mainRef = useRef(null);
+
+  useGSAP(() => {
+    if (mainRef.current) {
+      gsap.fromTo(mainRef.current.children, 
+        { opacity: 0, y: 20 }, 
+        { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out' }
+      );
+    }
+  }, []);
 
   useEffect(() => {
     // Scroll al final cuando haya un nuevo log
@@ -30,7 +42,7 @@ const AdminDashboardPage = () => {
   }, []);
 
   return (
-    <div className="w-full h-[calc(100vh-2rem)] max-w-6xl mx-auto px-4 py-8 flex flex-col">
+    <div ref={mainRef} className="w-full h-[calc(100vh-2rem)] max-w-6xl mx-auto px-4 py-8 flex flex-col">
       <div className="mb-6 flex-shrink-0">
         <h1 className="text-4xl font-display font-bold text-white tracking-tight">Consola de Control</h1>
         <p className="text-outline mt-2 font-body text-lg">Monitoreo en tiempo real de los eventos del sistema.</p>

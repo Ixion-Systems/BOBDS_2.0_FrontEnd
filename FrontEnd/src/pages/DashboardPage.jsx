@@ -45,7 +45,7 @@ const DashboardPage = () => {
                   <span className="material-symbols-outlined text-[#FFD700] text-xl lg:text-3xl">campaign</span>
                   <h2 className="font-headline-md text-lg lg:text-[24px] text-on-surface tracking-wide">Tablón de Actualizaciones</h2>
                 </div>
-                <span className="font-label-sm text-[10px] lg:text-xs px-3 lg:px-4 py-1 lg:py-1.5 bg-[#1a1a1a] text-outline rounded border border-[#FFD700]/30 flex items-center gap-2">
+                <span className="font-label-sm text-[10px] lg:text-xs px-3 lg:px-4 py-1 lg:py-1.5 bg-[#1a1a1a]/[0.85] backdrop-blur-md text-outline rounded border border-[#FFD700]/30 flex items-center gap-2">
                   <span className="w-1.5 h-1.5 lg:w-2 lg:h-2 rounded-full shadow-[0_0_4px_rgba(255,215,0,0.5)]" style={{ backgroundColor: '#FFD700' }}></span>
                   V2
                 </span>
@@ -114,7 +114,7 @@ const DashboardPage = () => {
                 <span className="material-symbols-outlined text-[#FFD700] text-xl lg:text-3xl">code</span>
                 <h2 className="font-headline-md text-lg lg:text-[24px] text-on-surface tracking-wide">Notas del Desarrollador</h2>
               </div>
-              <div className="flex-1 bg-[#1a1a1a]/50 rounded-md border border-outline/10 p-3 lg:p-5 font-mono text-[#a0a0a0] flex flex-col gap-2.5 lg:gap-4 overflow-y-auto custom-scrollbar text-[12px] lg:text-[14px] text-left lg:mt-2 min-h-0">
+              <div className="flex-1 bg-[#1a1a1a]/[0.85] backdrop-blur-md/50 rounded-md border border-outline/10 p-3 lg:p-5 font-mono text-[#a0a0a0] flex flex-col gap-2.5 lg:gap-4 overflow-y-auto custom-scrollbar text-[12px] lg:text-[14px] text-left lg:mt-2 min-h-0">
                   <div className="dev-note-item flex items-start gap-2.5 lg:gap-3 pb-2.5 lg:pb-4 border-b border-outline/5 hover:text-[#FFD700] transition-colors duration-300 group/note text-left shrink-0">
                     <span className="text-[#FFD700] shrink-0 mt-0.5 opacity-80 group-hover/note:opacity-100 transition-opacity">&lt;/&gt;</span>
                     <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">Criptografía SHA-256:</strong> Algoritmos hash implementados en backend para Login/Signup.</span>
