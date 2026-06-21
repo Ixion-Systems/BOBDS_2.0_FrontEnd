@@ -23,6 +23,7 @@ import SettingsPage from './pages/SettingsPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import AdminMonitorPage from './pages/AdminMonitorPage';
 import AdminUsersPage from './pages/AdminUsersPage';
+import PermissionsPage from './pages/PermissionsPage';
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
                   </Route>
                   <Route path="write-order" element={<WriteOrderPage />} />
                   <Route path="order-history" element={<OrderHistoryPage />} />
+                  <Route path="permissions" element={<PermissionsPage />} />
                   <Route path="settings" element={<SettingsPage />} />
                   {/* Rutas Admin */}
                   <Route path="admin">

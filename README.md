@@ -22,12 +22,11 @@ B.O.B.D.S. Client is the frontend application for the Base Operativa de Batalla 
 
 * **Real-time Order & Unit History:** Live updates driven by Server-Sent Events (SSE), dynamically sorting orders chronologically via ID tiebreakers without manual refreshing.
 * **Immersive Landing Page:** A dynamic entry point with 3D canvas rendering and smooth scroll-triggered animations.
-* **Unit Management Dashboard:** A centralized hub to inspect, delete, and monitor the status of all registered robotic units in real-time.
-* **Unit Registration & Linking:** A streamlined, highly animated form to register new units and securely link them to individual operators using Secret Tokens.
-* **Role-Based Views:** Complex UI conditional rendering strictly governed by the operator's role hierarchy (Admin, Co-owner, Owner, Operator, Guest).
-* **Order Management & History:** Create and inject orders directly into units, with full traceability, combobox filters, and dynamic history.
-* **Secure Authentication:** Seamless login and registration flows with advanced validations and anti-double-submit protections.
-* **Immersive UI/UX:** High-performance animations powered by GSAP (including timeline-managed deletions), glowing glassmorphism aesthetics, dynamic background pulses, and responsive layouts.
+* **Unit Management Dashboard:** A centralized hub to inspect, delete, and monitor the status of all registered robotic units in real-time, with clear separation between owned and linked units.
+* **Role-Based Views & Permissions:** Complex UI conditional rendering strictly governed by the operator's role hierarchy (Propietario, Co-Propietario, Administrador, Operador, Invitado).
+* **Audit & Monitoring Panel:** Dedicated interface for Administrators and Owners to trace platform-wide interaction logs with custom combobox filters.
+* **Order Management & History:** Create and inject orders directly into units, with full traceability and dynamic history.
+* **Immersive UI/UX:** High-performance animations powered by GSAP (including timeline-managed deletions), glowing glassmorphism aesthetics, custom comboboxes replacing native selects, and responsive layouts.
 
 ## Prerequisites
 
