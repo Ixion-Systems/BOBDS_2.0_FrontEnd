@@ -117,6 +117,9 @@ const WriteOrderPage = () => {
         if (res.ok) {
           const data = await res.json();
           setUnits(data);
+          if (data.length > 0) {
+            setUnit(data[0].idUnidad);
+          }
         }
       } catch (err) {
         console.error("Error al obtener unidades:", err);
@@ -215,6 +218,7 @@ const WriteOrderPage = () => {
   
   // Función auxiliar para obtener el nombre de la unidad seleccionada
   const getSelectedUnitLabel = () => {
+    if (units.length === 0) return 'No posee unidades';
     if (!unit) return 'Selecciona una unidad...';
     const selected = units.find(u => u.idUnidad === unit);
     if (!selected) return 'Selecciona una unidad...';

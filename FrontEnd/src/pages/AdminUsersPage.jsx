@@ -23,11 +23,14 @@ const AdminUsersPage = () => {
   // Modals state
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, type: '', id: null, closing: false });
   const [infoModal, setInfoModal] = useState({ isOpen: false, unit: null, closing: false });
+  const [orderInfoModal, setOrderInfoModal] = useState({ isOpen: false, order: null, closing: false });
 
   const deleteBgRef = useRef(null);
   const deletePanelRef = useRef(null);
   const infoBgRef = useRef(null);
   const infoPanelRef = useRef(null);
+  const orderInfoBgRef = useRef(null);
+  const orderInfoPanelRef = useRef(null);
 
   useEffect(() => {
     fetchUsers();
@@ -322,61 +325,105 @@ const AdminUsersPage = () => {
               {/* CONTENIDO DERECHO (Scroll) */}
               <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
                 
-                {activeTab === 'unidades' && (
-                  <div className="units-view space-y-4">
-                    <h3 className="text-white font-semibold flex items-center mb-4">
-                      Unidades
-                      <span className="ml-2 bg-white/5 border border-outline/10 px-2 py-0.5 rounded-full text-[#FFD700] text-xs font-mono">{userUnits.length}</span>
-                    </h3>
+                {activeTab === 'unidades' && (() => {
+                  const ownUnits = userUnits.filter(u => u.rol === 'Propietario');
+                  const linkedUnits = userUnits.filter(u => u.rol !== 'Propietario');
+                  
+                  return (
+                  <div className="units-view space-y-8 animate-in fade-in slide-in-from-top-2 duration-300">
                     {userUnits.length === 0 ? (
                       <p className="text-outline text-center py-8">Este usuario no posee unidades asignadas.</p>
                     ) : (
-                      userUnits.map(unit => (
-                        <div key={unit.idUnidad} className="unit-item bg-[#1a1a1a]/[0.85] backdrop-blur-md border border-outline/10 p-4 rounded-xl flex items-center justify-between group hover:border-[#FFD700]/50 transition-all">
-                          <div>
-                            <h4 className="text-white font-medium">{unit.nombre || 'Sin Nombre'}</h4>
-                            <p className="text-xs text-outline">ID: {unit.idUnidad} · Estado: {unit.estado}</p>
+                      <>
+                        {/* Unidades Propias */}
+                        {ownUnits.length > 0 && (
+                          <div className="space-y-4">
+                            <h3 className="text-white font-semibold flex items-center mb-4 border-b border-outline/10 pb-2">
+                              Unidades Propias
+                              <span className="ml-2 bg-[#FFD700]/20 border border-[#FFD700]/30 px-2 py-0.5 rounded-full text-[#FFD700] text-xs font-mono">{ownUnits.length}</span>
+                            </h3>
+                            <div className="grid gap-4">
+                              {ownUnits.map(unit => (
+                                <div key={unit.idUnidad} className="unit-item bg-[#1a1a1a]/[0.85] backdrop-blur-md border border-outline/10 p-4 rounded-xl flex items-center justify-between group hover:border-[#FFD700]/50 transition-all">
+                                  <div>
+                                    <h4 className="text-white font-medium">{unit.nombre || 'Sin Nombre'}</h4>
+                                    <p className="text-xs text-outline">ID: {unit.idUnidad} · Estado: {unit.estado}</p>
+                                  </div>
+                                  <div className="flex gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
+                                    <button onClick={() => openInfoModal(unit)} className="p-2 text-[#FFD700] hover:bg-[#FFD700]/20 rounded-lg transition-colors flex items-center justify-center" title="Ver Info">
+                                      <span className="material-symbols-outlined text-[20px]">info</span>
+                                    </button>
+                                    <button onClick={() => openActionModal('unidad', unit.idUnidad, 'delete')} className="p-2 text-red-500 hover:bg-red-500/20 rounded-lg transition-colors flex items-center justify-center" title="Eliminar">
+                                      <span className="material-symbols-outlined text-[20px]">delete</span>
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
                           </div>
-                          <div className="flex gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
-                            <button onClick={() => openInfoModal(unit)} className="p-2 text-[#FFD700] hover:bg-[#FFD700]/20 rounded-lg transition-colors flex items-center justify-center" title="Ver Info">
-                              <span className="material-symbols-outlined text-[20px]">info</span>
-                            </button>
-                            <button onClick={() => openActionModal('unidad', unit.idUnidad, 'delete')} className="p-2 text-red-500 hover:bg-red-500/20 rounded-lg transition-colors flex items-center justify-center" title="Eliminar">
-                              <span className="material-symbols-outlined text-[20px]">delete</span>
-                            </button>
+                        )}
+
+                        {/* Unidades Vinculadas */}
+                        {linkedUnits.length > 0 && (
+                          <div className="space-y-4">
+                            <h3 className="text-white font-semibold flex items-center mb-4 border-b border-outline/10 pb-2">
+                              Unidades Vinculadas
+                              <span className="ml-2 bg-white/5 border border-outline/10 px-2 py-0.5 rounded-full text-white/70 text-xs font-mono">{linkedUnits.length}</span>
+                            </h3>
+                            <div className="grid gap-4">
+                              {linkedUnits.map(unit => (
+                                <div key={unit.idUnidad} className="unit-item bg-[#1a1a1a]/[0.85] backdrop-blur-md border border-outline/10 p-4 rounded-xl flex items-center justify-between group hover:border-[#FFD700]/50 transition-all">
+                                  <div className="flex-1">
+                                    <h4 className="text-white font-medium flex items-center gap-3">
+                                      {unit.nombre || 'Sin Nombre'}
+                                      <span className="bg-white/10 text-on-surface-variant px-2 py-0.5 rounded text-[10px] uppercase tracking-wider border border-white/5">{unit.rol}</span>
+                                    </h4>
+                                    <p className="text-xs text-outline mt-1">ID: {unit.idUnidad} · Estado: {unit.estado}</p>
+                                  </div>
+                                  <div className="flex gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
+                                    <button onClick={() => openInfoModal(unit)} className="p-2 text-[#FFD700] hover:bg-[#FFD700]/20 rounded-lg transition-colors flex items-center justify-center" title="Ver Info">
+                                      <span className="material-symbols-outlined text-[20px]">info</span>
+                                    </button>
+                                    <button onClick={() => openActionModal('unidad', unit.idUnidad, 'delete')} className="p-2 text-red-500 hover:bg-red-500/20 rounded-lg transition-colors flex items-center justify-center" title="Desvincular">
+                                      <span className="material-symbols-outlined text-[20px]">link_off</span>
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                      ))
+                        )}
+                      </>
                     )}
                   </div>
-                )}
+                )})()}
 
                 {activeTab === 'ordenes' && (
-                  <div className="orders-view space-y-4">
+                  <div className="orders-view space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
                     {userUnits.length === 0 ? (
                       <p className="text-outline text-center py-8">No hay unidades para consultar órdenes.</p>
                     ) : (
                       <>
-                        <div className="mb-6">
+                        <div className="mb-6 relative z-50">
                           <label className="block text-sm font-medium text-outline mb-2">Seleccionar Unidad</label>
-                          <div className="relative">
+                          <div className="relative group">
                             <div 
                               onClick={() => setIsUnitDropdownOpen(!isUnitDropdownOpen)}
-                              className="w-full bg-[#1a1a1a]/[0.85] backdrop-blur-md border border-outline/20 rounded-lg px-4 py-3 text-white outline-none hover:border-[#FFD700]/50 transition-colors cursor-pointer flex justify-between items-center"
+                              className={`w-full bg-[#000000]/50 border ${isUnitDropdownOpen ? 'border-[#FFD700] ring-1 ring-[#FFD700]/20' : 'border-white/20 hover:border-[#FFD700]/50'} text-white font-body-md rounded-xl px-4 py-4 transition-all cursor-pointer flex items-center justify-between select-none`}
                             >
                               {selectedUnit ? (
-                                <div className="flex items-center gap-2">
-                                  <span>{userUnits.find(u => u.idUnidad === selectedUnit)?.nombre || 'Sin Nombre'}</span>
-                                  <span className="bg-white/5 border border-outline/10 px-2 py-0.5 rounded-md text-[#FFD700] text-xs font-mono">{selectedUnit}</span>
-                                </div>
+                                <span className="flex items-center gap-2">
+                                  {userUnits.find(u => u.idUnidad === selectedUnit)?.nombre || 'Sin Nombre'}
+                                  <span className="bg-[#FFD700]/20 text-[#FFD700] px-2 py-0.5 rounded font-mono text-[10px] uppercase tracking-wider ml-1">ID: {selectedUnit}</span>
+                                </span>
                               ) : (
                                 <span className="text-outline/50">Selecciona una unidad...</span>
                               )}
-                              <span className={`material-symbols-outlined transition-transform ${isUnitDropdownOpen ? 'rotate-180' : ''}`}>expand_more</span>
+                              <span className={`material-symbols-outlined transition-transform duration-300 ${isUnitDropdownOpen ? 'rotate-180 text-[#FFD700]' : 'text-white/50 group-hover:text-[#FFD700]'}`}>expand_more</span>
                             </div>
                             
                             {isUnitDropdownOpen && (
-                              <div className="absolute top-full left-0 w-full mt-2 bg-[#1a1a1a]/[0.85] backdrop-blur-md border border-[#FFD700]/30 rounded-lg overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.8)] z-50">
+                              <div className="absolute top-full left-0 w-full mt-2 bg-[#0a0a0a] border border-[#FFD700]/30 rounded-xl overflow-hidden shadow-[0_15px_50px_rgba(0,0,0,0.9)] max-h-48 overflow-y-auto custom-scrollbar z-[100] animate-in fade-in slide-in-from-top-2 duration-200">
                                 {userUnits.map(unit => (
                                   <div 
                                     key={unit.idUnidad}
@@ -384,10 +431,19 @@ const AdminUsersPage = () => {
                                       setSelectedUnit(unit.idUnidad);
                                       setIsUnitDropdownOpen(false);
                                     }}
-                                    className="px-4 py-3 hover:bg-[#FFD700]/10 cursor-pointer flex items-center justify-between border-b border-outline/10 last:border-0"
+                                    className={`px-4 py-3 cursor-pointer flex items-center gap-3 transition-all ${
+                                      selectedUnit === unit.idUnidad 
+                                        ? 'bg-[#FFD700]/20 text-[#FFD700] border-l-2 border-[#FFD700]' 
+                                        : 'text-white hover:bg-white/10 border-l-2 border-transparent'
+                                    }`}
                                   >
-                                    <span className="text-white">{unit.nombre || 'Sin Nombre'}</span>
-                                    <span className="bg-white/5 border border-outline/10 px-2 py-0.5 rounded-md text-[#FFD700] text-xs font-mono">{unit.idUnidad}</span>
+                                    <div className={`w-2 h-2 rounded-full transition-all ${selectedUnit === unit.idUnidad ? 'bg-[#FFD700] shadow-[0_0_8px_#FFD700]' : 'bg-white/20'}`}></div>
+                                    <span className="flex items-center gap-2 text-sm">
+                                      {unit.nombre || 'Sin Nombre'}
+                                      <span className={`px-2 py-0.5 rounded font-mono text-[10px] uppercase tracking-wider ${selectedUnit === unit.idUnidad ? 'bg-[#FFD700]/20 text-[#FFD700]' : 'bg-white/10 text-on-surface-variant'}`}>
+                                        ID: {unit.idUnidad}
+                                      </span>
+                                    </span>
                                   </div>
                                 ))}
                               </div>

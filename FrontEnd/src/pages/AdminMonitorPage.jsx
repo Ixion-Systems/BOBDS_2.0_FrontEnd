@@ -31,6 +31,25 @@ const AdminMonitorPage = () => {
   const confirmPanelRef = useRef(null);
   const [isClosingConfirm, setIsClosingConfirm] = useState(false);
 
+  // Dropdown states
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
+  const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
+
+  const userDropRef = useRef(null);
+  const typeDropRef = useRef(null);
+  const sortDropRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userDropRef.current && !userDropRef.current.contains(event.target)) setUserDropdownOpen(false);
+      if (typeDropRef.current && !typeDropRef.current.contains(event.target)) setTypeDropdownOpen(false);
+      if (sortDropRef.current && !sortDropRef.current.contains(event.target)) setSortDropdownOpen(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const mainRef = useRef(null);
 
   useGSAP(() => {
@@ -218,43 +237,88 @@ const AdminMonitorPage = () => {
         <p className="text-outline mt-2 font-body text-lg">Revisa el historial de acciones y audita el sistema.</p>
       </div>
 
-      <div className="bg-[#121212]/[0.85] backdrop-blur-md rounded-2xl border border-outline/10 p-6 shadow-lg flex flex-col md:flex-row gap-6 mb-6 shrink-0">
-        <div className="flex-1">
+      <div className="bg-[#121212]/[0.85] backdrop-blur-md rounded-2xl border border-outline/10 p-6 shadow-lg flex flex-col md:flex-row gap-6 mb-6 shrink-0 z-30 relative">
+        <div className="flex-1 relative" ref={userDropRef}>
           <label className="block text-sm font-medium text-outline mb-2">Usuario</label>
-          <select 
-            value={selectedUser} 
-            onChange={e => setSelectedUser(e.target.value)}
-            className="w-full bg-[#1a1a1a]/[0.85] backdrop-blur-md border border-outline/20 rounded-lg px-4 py-2 text-white outline-none focus:border-[#FFD700] transition-colors"
+          <div 
+            onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+            className={`w-full bg-[#1a1a1a]/[0.85] backdrop-blur-md border ${userDropdownOpen ? 'border-[#FFD700] ring-1 ring-[#FFD700]/20' : 'border-outline/20 hover:border-[#FFD700]/50'} rounded-lg px-4 py-3 text-white transition-all cursor-pointer flex items-center justify-between select-none`}
           >
-            <option value="ALL">Todos los usuarios</option>
-            <option value="SYSTEM">Sistema (Automático)</option>
-            {users.map(u => (
-              <option key={u.Email} value={u.Email}>{u.NombreUsuario} ({u.Email})</option>
-            ))}
-          </select>
+            <span className="truncate pr-4">
+              {selectedUser === 'ALL' ? 'Todos los usuarios' : selectedUser === 'SYSTEM' ? 'Sistema (Automático)' : users.find(u => u.Email === selectedUser)?.NombreUsuario + ' (' + selectedUser + ')' || selectedUser}
+            </span>
+            <span className={`material-symbols-outlined transition-transform duration-300 ${userDropdownOpen ? 'rotate-180 text-[#FFD700]' : 'text-white/50'}`}>expand_more</span>
+          </div>
+          
+          {userDropdownOpen && (
+            <div className="absolute top-full left-0 w-full mt-2 bg-[#0a0a0a] border border-[#FFD700]/30 rounded-xl overflow-hidden shadow-[0_15px_50px_rgba(0,0,0,0.9)] max-h-48 overflow-y-auto custom-scrollbar z-[100] animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="p-2 space-y-1">
+                {[{Email: 'ALL', NombreUsuario: 'Todos los usuarios'}, {Email: 'SYSTEM', NombreUsuario: 'Sistema (Automático)'}, ...users].map(u => (
+                  <div 
+                    key={u.Email}
+                    onClick={() => { setSelectedUser(u.Email); setUserDropdownOpen(false); }}
+                    className={`cursor-pointer px-4 py-2 rounded-lg font-display text-sm transition-all flex items-center gap-3 ${selectedUser === u.Email ? 'bg-[#FFD700]/20 text-[#FFD700]' : 'text-white hover:bg-white/10'}`}
+                  >
+                    {u.NombreUsuario} {u.Email !== 'ALL' && u.Email !== 'SYSTEM' && `(${u.Email})`}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
-        <div className="flex-1">
+        
+        <div className="flex-1 relative" ref={typeDropRef}>
           <label className="block text-sm font-medium text-outline mb-2">Tipo de Acción</label>
-          <select 
-            value={filterType} 
-            onChange={e => setFilterType(e.target.value)}
-            className="w-full bg-[#1a1a1a]/[0.85] backdrop-blur-md border border-outline/20 rounded-lg px-4 py-2 text-white outline-none focus:border-[#FFD700] transition-colors"
+          <div 
+            onClick={() => setTypeDropdownOpen(!typeDropdownOpen)}
+            className={`w-full bg-[#1a1a1a]/[0.85] backdrop-blur-md border ${typeDropdownOpen ? 'border-[#FFD700] ring-1 ring-[#FFD700]/20' : 'border-outline/20 hover:border-[#FFD700]/50'} rounded-lg px-4 py-3 text-white transition-all cursor-pointer flex items-center justify-between select-none`}
           >
-            <option value="ALL">Todas</option>
-            <option value="LECTURA">Lectura</option>
-            <option value="ESCRITURA">Escritura (Modificaciones)</option>
-          </select>
+            <span>{filterType === 'ALL' ? 'Todas' : filterType === 'LECTURA' ? 'Lectura' : 'Escritura (Modificaciones)'}</span>
+            <span className={`material-symbols-outlined transition-transform duration-300 ${typeDropdownOpen ? 'rotate-180 text-[#FFD700]' : 'text-white/50'}`}>expand_more</span>
+          </div>
+          
+          {typeDropdownOpen && (
+            <div className="absolute top-full left-0 w-full mt-2 bg-[#0a0a0a] border border-[#FFD700]/30 rounded-xl overflow-hidden shadow-[0_15px_50px_rgba(0,0,0,0.9)] z-[100] animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="p-2 space-y-1">
+                {['ALL', 'LECTURA', 'ESCRITURA'].map(t => (
+                  <div 
+                    key={t}
+                    onClick={() => { setFilterType(t); setTypeDropdownOpen(false); }}
+                    className={`cursor-pointer px-4 py-2 rounded-lg font-display text-sm transition-all flex items-center gap-3 ${filterType === t ? 'bg-[#FFD700]/20 text-[#FFD700]' : 'text-white hover:bg-white/10'}`}
+                  >
+                    {t === 'ALL' ? 'Todas' : t === 'LECTURA' ? 'Lectura' : 'Escritura (Modificaciones)'}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
-        <div className="flex-1">
+        
+        <div className="flex-1 relative" ref={sortDropRef}>
           <label className="block text-sm font-medium text-outline mb-2">Orden</label>
-          <select 
-            value={sortOrder} 
-            onChange={e => setSortOrder(e.target.value)}
-            className="w-full bg-[#1a1a1a]/[0.85] backdrop-blur-md border border-outline/20 rounded-lg px-4 py-2 text-white outline-none focus:border-[#FFD700] transition-colors"
+          <div 
+            onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
+            className={`w-full bg-[#1a1a1a]/[0.85] backdrop-blur-md border ${sortDropdownOpen ? 'border-[#FFD700] ring-1 ring-[#FFD700]/20' : 'border-outline/20 hover:border-[#FFD700]/50'} rounded-lg px-4 py-3 text-white transition-all cursor-pointer flex items-center justify-between select-none`}
           >
-            <option value="DESC">Más recientes primero</option>
-            <option value="ASC">Más antiguos primero</option>
-          </select>
+            <span>{sortOrder === 'DESC' ? 'Más recientes primero' : 'Más antiguos primero'}</span>
+            <span className={`material-symbols-outlined transition-transform duration-300 ${sortDropdownOpen ? 'rotate-180 text-[#FFD700]' : 'text-white/50'}`}>expand_more</span>
+          </div>
+          
+          {sortDropdownOpen && (
+            <div className="absolute top-full left-0 w-full mt-2 bg-[#0a0a0a] border border-[#FFD700]/30 rounded-xl overflow-hidden shadow-[0_15px_50px_rgba(0,0,0,0.9)] z-[100] animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="p-2 space-y-1">
+                {['DESC', 'ASC'].map(o => (
+                  <div 
+                    key={o}
+                    onClick={() => { setSortOrder(o); setSortDropdownOpen(false); }}
+                    className={`cursor-pointer px-4 py-2 rounded-lg font-display text-sm transition-all flex items-center gap-3 ${sortOrder === o ? 'bg-[#FFD700]/20 text-[#FFD700]' : 'text-white hover:bg-white/10'}`}
+                  >
+                    {o === 'DESC' ? 'Más recientes primero' : 'Más antiguos primero'}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

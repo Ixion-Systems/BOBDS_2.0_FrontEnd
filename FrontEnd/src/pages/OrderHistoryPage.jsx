@@ -477,6 +477,7 @@ const OrderHistoryPage = () => {
   }, { dependencies: [actionSuccess, actionType] });
 
   const getSelectedUnitLabel = () => {
+    if (units.length === 0 && !loading) return 'No posee unidades';
     if (!selectedUnitId) return 'Selecciona una unidad...';
     const selected = units.find(u => u.idUnidad === selectedUnitId);
     if (!selected) return 'Selecciona una unidad...';
