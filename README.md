@@ -79,3 +79,5 @@ Once the development server is running, navigate to the provided localhost port 
 * `FrontEnd/src/assets/`: Static resources including images, 3D models, and typography files.
 * `FrontEnd/tailwind.config.js` & `FrontEnd/postcss.config.js`: Configuration files for the Tailwind CSS utility framework.
 * `FrontEnd/src/index.css`: Global stylesheet containing Tailwind directives, CSS variables, and custom layout adjustments.
+## Deployment (Docker & .env)
+This component is fully containerized using Docker and served via Nginx. It also serves as the main orchestrator repository for the Dokploy PaaS, housing the global docker-compose.yml. Configuration is managed via a .env file located in the root directory (excluded via .gitignore).
