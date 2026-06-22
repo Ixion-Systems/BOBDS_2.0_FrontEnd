@@ -231,7 +231,7 @@ const AdminUsersPage = () => {
     setInfoModal({ isOpen: true, unit, closing: false, details: null });
     setLoadingInfo(true);
     try {
-      const res = await fetch(`http://localhost:8081/api/admin/units/${unit.idUnidad}`);
+      const res = await fetch(`/api/admin/units/${unit.idUnidad}`);
       if (res.ok) {
         const details = await res.json();
         setInfoModal(prev => ({ ...prev, details }));
