@@ -398,6 +398,25 @@ const PermissionsPage = () => {
     }
   }, [selectedUnit]);
 
+  useEffect(() => {
+    const eventSource = new EventSource('/api/stream', { withCredentials: true });
+
+    eventSource.addEventListener('unit_update', (event) => {
+      const updatedUnitId = event.data;
+      if (selectedUnit && selectedUnit.idUnidad === updatedUnitId) {
+        fetchUnitUsers(selectedUnit.idUnidad);
+      }
+    });
+
+    eventSource.onerror = (error) => {
+      console.error('SSE Error in PermissionsPage:', error);
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, [selectedUnit]);
+
   const handleRoleChange = async (newRole) => {
     if (!manageUser || !selectedUnit) return;
     try {

@@ -805,9 +805,9 @@ const UnitsPage = () => {
                   {/* Estado */}
                   <div className="flex items-center gap-3">
                     <span className="font-body-md text-on-surface-variant text-[11px] uppercase tracking-widest opacity-60">Estado:</span>
-                    <div className={`flex items-center gap-2 px-3 py-1 rounded-full border ${isActive ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-red-500/10 border-red-500/20'}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-400 shadow-[0_0_5px_#34d399]' : 'bg-red-500 shadow-[0_0_5px_#ef4444]'}`}></span>
-                      <span className={`font-headline-md text-xs uppercase tracking-widest ${isActive ? 'text-emerald-400' : 'text-red-500'}`}>
+                    <div className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-colors duration-500 ${isActive ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-red-500/10 border-red-500/20'}`}>
+                      <span className={`w-1.5 h-1.5 rounded-full transition-colors duration-500 ${isActive ? 'bg-emerald-400 shadow-[0_0_5px_#34d399]' : 'bg-red-500 shadow-[0_0_5px_#ef4444]'}`}></span>
+                      <span key={unit.estado} className={`animate-pop-in font-headline-md text-xs uppercase tracking-widest transition-colors duration-500 ${isActive ? 'text-emerald-400' : 'text-red-500'}`}>
                         {unit.estado}
                       </span>
                     </div>
@@ -816,7 +816,7 @@ const UnitsPage = () => {
                   {/* Rol */}
                   <div className="flex items-center gap-3">
                     <span className="font-body-md text-on-surface-variant text-[11px] uppercase tracking-widest opacity-60">Rol:</span>
-                    <span className={`font-headline-md text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border ${roleColorClass}`}>
+                    <span key={unit.rol} className={`animate-pop-in transition-colors duration-500 font-headline-md text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border ${roleColorClass}`}>
                       {unit.rol}
                     </span>
                   </div>
