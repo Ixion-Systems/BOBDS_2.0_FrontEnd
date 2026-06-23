@@ -81,7 +81,7 @@ const LoginPage = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await authService.login(formData.email, formData.password);
+      await authService.login(formData.email, formData.password, formData.keepSession);
       login({ email: formData.email }, formData.keepSession);
       triggerOrbitalTransition(() => navigate('/dashboard'));
     } catch (error) {

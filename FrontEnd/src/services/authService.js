@@ -26,12 +26,12 @@ export const authService = {
     }
   },
 
-  login: async (email, password) => {
+  login: async (email, password, keepSession) => {
     try {
       const response = await fetch(`${API_BASE_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ email, password })
+        body: new URLSearchParams({ email, password, keepSession: keepSession ? 'true' : 'false' })
       });
       
       const result = await response.text();
