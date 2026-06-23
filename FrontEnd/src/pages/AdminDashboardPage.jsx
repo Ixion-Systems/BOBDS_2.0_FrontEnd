@@ -24,8 +24,23 @@ const AdminDashboardPage = () => {
   }, [logs]);
 
   useEffect(() => {
+    // Cargar logs existentes
+    const fetchLogs = async () => {
+      try {
+        const res = await fetch('/api/admin/logs');
+        if (res.ok) {
+          const data = await res.json();
+          const formattedLogs = data.map(l => `${new Date(l.fechaHora).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'medium' })} > ${l.emailUsuario} > ${l.descripcion}`);
+          setLogs(formattedLogs);
+        }
+      } catch (e) {
+        console.error('Error fetching logs:', e);
+      }
+    };
+    fetchLogs();
+
     // Abrir conexión SSE
-    const eventSource = new EventSource('/api/admin/stream', { withCredentials: true });
+    const eventSource = new EventSource('/api/stream', { withCredentials: true });
 
     eventSource.addEventListener('admin_log', (event) => {
       setLogs((prev) => [...prev, event.data]);
