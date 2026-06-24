@@ -100,30 +100,32 @@ const AdminUsersPage = () => {
   }, []);
 
   useGSAP(() => {
-    if (activeTab === 'unidades') {
-      gsap.fromTo('.units-view', 
-        { opacity: 0, y: 10 }, 
-        { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }
-      );
-      if (userUnits.length > 0) {
-        gsap.fromTo('.unit-item', 
-          { opacity: 0, x: -20 }, 
-          { opacity: 1, x: 0, stagger: 0.05, duration: 0.3, ease: 'power2.out', delay: 0.1 }
+    if (selectedUser) {
+      if (activeTab === 'unidades') {
+        gsap.fromTo('.units-view', 
+          { opacity: 0, y: 10 }, 
+          { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }
         );
-      }
-    } else if (activeTab === 'ordenes') {
-      gsap.fromTo('.orders-view', 
-        { opacity: 0, y: 10 }, 
-        { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }
-      );
-      if (unitOrders.length > 0) {
-        gsap.fromTo('.order-item', 
-          { opacity: 0, x: -20 }, 
-          { opacity: 1, x: 0, stagger: 0.05, duration: 0.3, ease: 'power2.out', delay: 0.1 }
+        if (userUnits.length > 0) {
+          gsap.fromTo('.unit-item', 
+            { opacity: 0, x: -20 }, 
+            { opacity: 1, x: 0, stagger: 0.05, duration: 0.3, ease: 'power2.out', delay: 0.1 }
+          );
+        }
+      } else if (activeTab === 'ordenes') {
+        gsap.fromTo('.orders-view', 
+          { opacity: 0, y: 10 }, 
+          { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }
         );
+        if (unitOrders.length > 0) {
+          gsap.fromTo('.order-item', 
+            { opacity: 0, x: -20 }, 
+            { opacity: 1, x: 0, stagger: 0.05, duration: 0.3, ease: 'power2.out', delay: 0.1 }
+          );
+        }
       }
     }
-  }, [activeTab, userUnits, unitOrders]);
+  }, [activeTab, userUnits, unitOrders, selectedUser]);
 
   const closeDeleteModal = () => {
     setDeleteModal(prev => ({ ...prev, closing: true }));
@@ -573,12 +575,12 @@ const AdminUsersPage = () => {
                 <>
                   <div className="flex justify-between border-b border-outline/10 pb-2 items-center">
                     <span className="text-outline">Fecha de Creación</span>
-                    <span className="text-white">{new Date(Number(infoModal.details.createdAtMs)).toLocaleString()}</span>
+                    <span className="text-white">{new Date(Number(infoModal.details.CreatedAtMs)).toLocaleString()}</span>
                   </div>
-                  {infoModal.details.descripcion && (
+                  {infoModal.details.Descripcion && (
                     <div className="flex flex-col border-b border-outline/10 pb-2">
                       <span className="text-outline mb-1">Descripción</span>
-                      <span className="text-white text-sm">{infoModal.details.descripcion}</span>
+                      <p className="text-white whitespace-pre-wrap">{infoModal.details.Descripcion}</p>
                     </div>
                   )}
                 </>
