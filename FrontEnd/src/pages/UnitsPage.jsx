@@ -90,24 +90,36 @@ const ModifyUnitModal = ({ isOpen, onClose, onConfirm, unitToModify }) => {
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-2">
               <label className="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-widest opacity-80">Nombre de Unidad</label>
-              <input 
-                type="text" 
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
-                onClick={() => { if (nombre === unitToModify?.nombre) setNombre(''); }}
-                className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white font-body-md focus:border-[#FFD700] focus:ring-1 focus:ring-[#FFD700]/50 outline-none transition-all placeholder:text-white/20"
-                placeholder="Nombre de la unidad..."
-              />
+              <div className="relative flex items-center">
+                <input 
+                  type="text" 
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                  className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 pr-10 text-white font-body-md focus:border-[#FFD700] focus:ring-1 focus:ring-[#FFD700]/50 outline-none transition-all placeholder:text-white/20"
+                  placeholder="Nombre de la unidad..."
+                />
+                {nombre && (
+                  <button onClick={() => setNombre('')} className="absolute right-3 text-white/40 hover:text-white transition-colors p-1" title="Borrar todo">
+                    <span className="material-symbols-outlined text-[18px] block">close</span>
+                  </button>
+                )}
+              </div>
             </div>
             <div className="flex flex-col gap-2">
               <label className="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-widest opacity-80">Descripción</label>
-              <textarea 
-                value={descripcion}
-                onChange={(e) => setDescripcion(e.target.value)}
-                onClick={() => { if (descripcion === unitToModify?.descripcion) setDescripcion(''); }}
-                className="w-full h-32 bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white font-body-md focus:border-[#FFD700] focus:ring-1 focus:ring-[#FFD700]/50 outline-none transition-all resize-none placeholder:text-white/20 custom-scrollbar"
-                placeholder="Descripción de la unidad..."
-              ></textarea>
+              <div className="relative">
+                <textarea 
+                  value={descripcion}
+                  onChange={(e) => setDescripcion(e.target.value)}
+                  className="w-full h-32 bg-black/50 border border-white/10 rounded-xl px-4 py-3 pr-10 text-white font-body-md focus:border-[#FFD700] focus:ring-1 focus:ring-[#FFD700]/50 outline-none transition-all resize-none placeholder:text-white/20 custom-scrollbar"
+                  placeholder="Descripción de la unidad..."
+                ></textarea>
+                {descripcion && (
+                  <button onClick={() => setDescripcion('')} className="absolute right-3 top-3 text-white/40 hover:text-white transition-colors p-1" title="Borrar todo">
+                    <span className="material-symbols-outlined text-[18px] block">close</span>
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
