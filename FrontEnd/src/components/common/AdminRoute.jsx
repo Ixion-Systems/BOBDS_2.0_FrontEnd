@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { useNavigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import PageLoader from './PageLoader';
 
 const AdminRoute = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [isVerifiedAdmin, setIsVerifiedAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -13,6 +14,7 @@ const AdminRoute = () => {
       // 1. Si no hay usuario o su flag local es falsa, ni siquiera consultamos a la DB.
       if (!user || !user.isAdmin) {
         setLoading(false);
+        navigate('/dashboard', { replace: true });
         return;
       }
 
@@ -25,25 +27,29 @@ const AdminRoute = () => {
           
           if (currentUser && currentUser.isAdmin) {
             setIsVerifiedAdmin(true);
+            setLoading(false);
+            return; // OK, it's an admin
           }
         }
       } catch (error) {
         console.error("Error verificando admin en la BD:", error);
-      } finally {
-        setLoading(false);
-      }
+      } 
+      
+      // If we reach here, verification failed or user is not admin
+      setLoading(false);
+      navigate('/dashboard', { replace: true });
     };
     
     checkAdmin();
-  }, [user]);
+  }, [user, navigate]);
 
   if (loading) {
     return <PageLoader />;
   }
 
-  // Si después de todo no es admin verificado, lo expulsamos al dashboard
+  // Si después de todo no es admin verificado, devolvemos null porque el useEffect ya hizo el navigate
   if (!isVerifiedAdmin) {
-    return <Navigate to="/dashboard" replace />;
+    return null;
   }
 
   return <Outlet />;
