@@ -11,21 +11,19 @@ const AdminRoute = () => {
 
   useEffect(() => {
     const checkAdmin = async () => {
-      // 1. Si no hay usuario o su flag local es falsa, ni siquiera consultamos a la DB.
-      if (!user || !user.isAdmin) {
+      // 1. Si no hay usuario en contexto, redirigimos
+      if (!user) {
         setLoading(false);
         navigate('/dashboard', { replace: true });
         return;
       }
 
-      // 2. Si dice ser admin localmente, lo verificamos en vivo contra la base de datos
+      // 2. Verificamos en vivo contra la base de datos con el endpoint ligero
       try {
-        const response = await fetch('/api/admin/users');
+        const response = await fetch('/api/admin/check');
         if (response.ok) {
-          const users = await response.json();
-          const currentUser = users.find(u => u.Email === (user.email || user.Email));
-          
-          if (currentUser && currentUser.isAdmin) {
+          const data = await response.json();
+          if (data.isAdmin) {
             setIsVerifiedAdmin(true);
             setLoading(false);
             return; // OK, it's an admin

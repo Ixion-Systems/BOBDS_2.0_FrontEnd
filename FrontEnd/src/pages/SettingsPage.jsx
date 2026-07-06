@@ -11,14 +11,13 @@ const SettingsPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if current user is admin by fetching all users
+    // Check if current user is admin by calling the check endpoint
     const checkAdmin = async () => {
       try {
-        const response = await fetch('/api/admin/users');
+        const response = await fetch('/api/admin/check');
         if (response.ok) {
-          const users = await response.json();
-          const currentUser = users.find(u => u.Email === user?.email);
-          if (currentUser && currentUser.isAdmin) {
+          const data = await response.json();
+          if (data.isAdmin) {
             setIsAdmin(true);
           }
         }

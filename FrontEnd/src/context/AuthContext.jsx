@@ -24,13 +24,10 @@ export const AuthProvider = ({ children }) => {
     return null;
   });
 
-  const [isAdminMode, setIsAdminMode] = useState(() => {
-    return localStorage.getItem('isAdminMode') === 'true';
-  });
+  const [isAdminMode, setIsAdminMode] = useState(false);
 
   const setAdminMode = (mode) => {
     setIsAdminMode(mode);
-    localStorage.setItem('isAdminMode', mode);
   };
 
   const login = (userData, keepSession) => {
