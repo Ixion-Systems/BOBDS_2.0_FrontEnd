@@ -13,6 +13,7 @@ import OrderHistoryPage from './pages/OrderHistoryPage';
 import DashboardLayout from './components/layout/DashboardLayout';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import PublicRoute from './components/common/PublicRoute';
+import AdminRoute from './components/common/AdminRoute';
 import { LoadingProvider } from './context/LoadingContext';
 import { AuthProvider } from './context/AuthContext';
 import { AlertProvider } from './context/AlertContext';
@@ -57,10 +58,12 @@ function App() {
                   <Route path="permissions" element={<PermissionsPage />} />
                   <Route path="settings" element={<SettingsPage />} />
                   {/* Rutas Admin */}
-                  <Route path="admin">
-                    <Route index element={<AdminDashboardPage />} />
-                    <Route path="monitoreo" element={<AdminMonitorPage />} />
-                    <Route path="usuarios" element={<AdminUsersPage />} />
+                  <Route element={<AdminRoute />}>
+                    <Route path="admin">
+                      <Route index element={<AdminDashboardPage />} />
+                      <Route path="monitoreo" element={<AdminMonitorPage />} />
+                      <Route path="usuarios" element={<AdminUsersPage />} />
+                    </Route>
                   </Route>
                 </Route>
               </Route>
