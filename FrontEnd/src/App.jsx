@@ -13,7 +13,7 @@ import OrderHistoryPage from './pages/OrderHistoryPage';
 import DashboardLayout from './components/layout/DashboardLayout';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import PublicRoute from './components/common/PublicRoute';
-import AdminRoute from './components/common/AdminRoute';
+import AdminGuard from './components/common/AdminGuard';
 import { LoadingProvider } from './context/LoadingContext';
 import { AuthProvider } from './context/AuthContext';
 import { AlertProvider } from './context/AlertContext';
@@ -57,13 +57,11 @@ function App() {
                   <Route path="order-history" element={<OrderHistoryPage />} />
                   <Route path="permissions" element={<PermissionsPage />} />
                   <Route path="settings" element={<SettingsPage />} />
-                  {/* Rutas Admin */}
-                  <Route element={<AdminRoute />}>
-                    <Route path="admin">
-                      <Route index element={<AdminDashboardPage />} />
-                      <Route path="monitoreo" element={<AdminMonitorPage />} />
-                      <Route path="usuarios" element={<AdminUsersPage />} />
-                    </Route>
+                  {/* Rutas Admin - cada página protegida individualmente */}
+                  <Route path="admin">
+                    <Route index element={<AdminGuard><AdminDashboardPage /></AdminGuard>} />
+                    <Route path="monitoreo" element={<AdminGuard><AdminMonitorPage /></AdminGuard>} />
+                    <Route path="usuarios" element={<AdminGuard><AdminUsersPage /></AdminGuard>} />
                   </Route>
                 </Route>
               </Route>
