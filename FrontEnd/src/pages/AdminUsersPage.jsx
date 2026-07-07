@@ -76,15 +76,16 @@ const AdminUsersPage = () => {
   }, [activeTab, selectedUnit, triggerOrderFetch]);
 
   useGSAP(() => {
+    if (!deleteBgRef.current || !deletePanelRef.current) return;
     if (deleteModal.isOpen && !deleteModal.closing) {
       gsap.fromTo(deleteBgRef.current, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: 'power2.out' });
       gsap.fromTo(deletePanelRef.current, { scale: 0.9, opacity: 0, y: 20 }, { scale: 1, opacity: 1, y: 0, duration: 0.3, ease: 'power3.out' });
     }
-    if (infoModal.isOpen && !infoModal.closing) {
+    if (infoModal.isOpen && !infoModal.closing && infoBgRef.current && infoPanelRef.current) {
       gsap.fromTo(infoBgRef.current, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: 'power2.out' });
       gsap.fromTo(infoPanelRef.current, { scale: 0.9, opacity: 0, y: 20 }, { scale: 1, opacity: 1, y: 0, duration: 0.3, ease: 'power3.out' });
     }
-    if (orderInfoModal.isOpen && !orderInfoModal.closing) {
+    if (orderInfoModal.isOpen && !orderInfoModal.closing && orderInfoBgRef.current && orderInfoPanelRef.current) {
       gsap.fromTo(orderInfoBgRef.current, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: 'power2.out' });
       gsap.fromTo(orderInfoPanelRef.current, { scale: 0.9, opacity: 0, y: 20 }, { scale: 1, opacity: 1, y: 0, duration: 0.3, ease: 'power3.out' });
     }
@@ -102,6 +103,7 @@ const AdminUsersPage = () => {
   }, []);
 
   useGSAP(() => {
+    if (!mainRef.current) return;
     if (selectedUser) {
       if (activeTab === 'unidades') {
         gsap.fromTo('.units-view', 

@@ -55,6 +55,7 @@ const AdminMonitorPage = () => {
   const mainRef = useRef(null);
 
   useGSAP(() => {
+    if (!mainRef.current) return;
     gsap.fromTo(mainRef.current.children, 
       { opacity: 0, y: 20 }, 
       { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out' }
@@ -62,6 +63,7 @@ const AdminMonitorPage = () => {
   }, []);
 
   useGSAP(() => {
+    if (!mainRef.current) return;
     if (getFilteredLogs().length > 0) {
       gsap.fromTo('.log-item', 
         { opacity: 0, x: -20 }, 
@@ -71,6 +73,7 @@ const AdminMonitorPage = () => {
   }, [logs, filterType, selectedUser, sortOrder]);
 
   useGSAP(() => {
+    if (!modalBgRef.current || !modalPanelRef.current) return;
     if (selectedLog && !isClosingLog) {
       gsap.fromTo(modalBgRef.current, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: 'power2.out' });
       gsap.fromTo(modalPanelRef.current, 
@@ -81,6 +84,7 @@ const AdminMonitorPage = () => {
   }, [selectedLog, isClosingLog]);
 
   useGSAP(() => {
+    if (!confirmBgRef.current || !confirmPanelRef.current) return;
     if (deleteConfirm && !isClosingConfirm) {
       gsap.fromTo(confirmBgRef.current, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: 'power2.out' });
       gsap.fromTo(confirmPanelRef.current, 
