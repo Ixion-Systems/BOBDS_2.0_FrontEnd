@@ -3,8 +3,10 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { useAuth } from '../context/AuthContext';
 import { useAlert } from '../context/AlertContext';
+import useAdminCheck from '../hooks/useAdminCheck';
 
 const AdminMonitorPage = () => {
+  const { isAdmin, loading: adminLoading } = useAdminCheck();
   const { user } = useAuth();
   const { showAlert } = useAlert();
   
@@ -229,6 +231,14 @@ const AdminMonitorPage = () => {
       closeConfirmModal();
     }
   };
+
+  if (adminLoading || !isAdmin) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#FFD700]/30 border-t-[#FFD700] rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div ref={mainRef} className="w-full h-[calc(100vh-6rem)] max-w-7xl mx-auto px-4 py-8 flex flex-col">

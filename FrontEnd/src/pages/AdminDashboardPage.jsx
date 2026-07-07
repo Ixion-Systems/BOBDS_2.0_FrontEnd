@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import useAdminCheck from '../hooks/useAdminCheck';
 
 const AdminDashboardPage = () => {
+  const { isAdmin, loading: adminLoading } = useAdminCheck();
   const [logs, setLogs] = useState([]);
   const logsEndRef = useRef(null);
   const mainRef = useRef(null);
@@ -40,6 +42,14 @@ const AdminDashboardPage = () => {
       eventSource.close();
     };
   }, []);
+
+  if (adminLoading || !isAdmin) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#FFD700]/30 border-t-[#FFD700] rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div ref={mainRef} className="w-full h-[calc(100vh-2rem)] max-w-6xl mx-auto px-4 py-8 flex flex-col">
