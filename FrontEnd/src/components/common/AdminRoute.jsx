@@ -1,47 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 const AdminRoute = () => {
   const { user, setIsAdminMode } = useAuth();
-  const [status, setStatus] = useState('loading'); // 'loading' | 'authorized' | 'denied'
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
 
     const verifyAdmin = async () => {
-      // Sin usuario en contexto, denegar inmediatamente
+      // Sin usuario en contexto, expulsar
       if (!user) {
-        if (!cancelled) {
-          setIsAdminMode(false);
-          setStatus('denied');
-        }
+        setIsAdminMode(false);
+        window.location.replace('/dashboard');
         return;
       }
 
       try {
         const response = await fetch(`/api/admin/check?t=${Date.now()}`);
-        if (!cancelled) {
-          if (response.ok) {
-            const data = await response.json();
-            if (data.isAdmin) {
-              setIsAdminMode(true);
-              setStatus('authorized');
-            } else {
-              setIsAdminMode(false);
-              setStatus('denied');
-            }
-          } else {
-            setIsAdminMode(false);
-            setStatus('denied');
+        if (cancelled) return;
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.isAdmin) {
+            setIsAdminMode(true);
+            setIsAuthorized(true);
+            setIsChecking(false);
+            return;
           }
         }
       } catch (error) {
         console.error("Error verificando admin:", error);
-        if (!cancelled) {
-          setIsAdminMode(false);
-          setStatus('denied');
-        }
+      }
+
+      // Si llegamos aquí, no es admin - redirección dura del navegador
+      if (!cancelled) {
+        setIsAdminMode(false);
+        window.location.replace('/dashboard');
       }
     };
 
@@ -49,7 +46,8 @@ const AdminRoute = () => {
     return () => { cancelled = true; };
   }, [user, setIsAdminMode]);
 
-  if (status === 'loading') {
+  // Mientras verifica, mostrar spinner simple
+  if (isChecking) {
     return (
       <div className="w-full h-full flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-[#FFD700]/30 border-t-[#FFD700] rounded-full animate-spin"></div>
@@ -57,8 +55,9 @@ const AdminRoute = () => {
     );
   }
 
-  if (status === 'denied') {
-    return <Navigate to="/dashboard" replace />;
+  // Seguridad adicional: si no está autorizado, no renderizar nada
+  if (!isAuthorized) {
+    return null;
   }
 
   return <Outlet />;
