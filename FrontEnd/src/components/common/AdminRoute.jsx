@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import PageLoader from './PageLoader';
 
 const AdminRoute = () => {
-  const { user } = useAuth();
+  const { user, setIsAdminMode } = useAuth();
   const navigate = useNavigate();
   const [isVerifiedAdmin, setIsVerifiedAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -18,9 +18,9 @@ const AdminRoute = () => {
         return;
       }
 
-      // 2. Verificamos en vivo contra la base de datos con el endpoint ligero
+      // 2. Verificamos en vivo contra la base de datos con el endpoint ligero, evitando caché
       try {
-        const response = await fetch('/api/admin/check');
+        const response = await fetch(`/api/admin/check?t=${new Date().getTime()}`);
         if (response.ok) {
           const data = await response.json();
           if (data.isAdmin) {
@@ -35,11 +35,12 @@ const AdminRoute = () => {
       
       // If we reach here, verification failed or user is not admin
       setLoading(false);
+      setIsAdminMode(false);
       navigate('/dashboard', { replace: true });
     };
     
     checkAdmin();
-  }, [user, navigate]);
+  }, [user, navigate, setIsAdminMode]);
 
   if (loading) {
     return <PageLoader />;

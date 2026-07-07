@@ -24,7 +24,9 @@ export const AuthProvider = ({ children }) => {
     return null;
   });
 
-  const [isAdminMode, setIsAdminMode] = useState(false);
+  const [isAdminMode, setIsAdminMode] = useState(() => {
+    return window.location.pathname.startsWith('/dashboard/admin');
+  });
 
   const setAdminMode = (mode) => {
     setIsAdminMode(mode);

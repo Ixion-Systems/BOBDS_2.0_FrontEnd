@@ -14,7 +14,7 @@ const SettingsPage = () => {
     // Check if current user is admin by calling the check endpoint
     const checkAdmin = async () => {
       try {
-        const response = await fetch('/api/admin/check');
+        const response = await fetch(`/api/admin/check?t=${new Date().getTime()}`);
         if (response.ok) {
           const data = await response.json();
           if (data.isAdmin) {
