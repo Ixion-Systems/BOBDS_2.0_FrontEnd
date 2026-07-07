@@ -1,54 +1,64 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import PageLoader from './PageLoader';
 
 const AdminRoute = () => {
   const { user, setIsAdminMode } = useAuth();
-  const navigate = useNavigate();
-  const [isVerifiedAdmin, setIsVerifiedAdmin] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [status, setStatus] = useState('loading'); // 'loading' | 'authorized' | 'denied'
 
   useEffect(() => {
-    const checkAdmin = async () => {
-      // 1. Si no hay usuario en contexto, redirigimos
+    let cancelled = false;
+
+    const verifyAdmin = async () => {
+      // Sin usuario en contexto, denegar inmediatamente
       if (!user) {
-        setLoading(false);
-        navigate('/dashboard', { replace: true });
+        if (!cancelled) {
+          setIsAdminMode(false);
+          setStatus('denied');
+        }
         return;
       }
 
-      // 2. Verificamos en vivo contra la base de datos con el endpoint ligero, evitando caché
       try {
-        const response = await fetch(`/api/admin/check?t=${new Date().getTime()}`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data.isAdmin) {
-            setIsVerifiedAdmin(true);
-            setLoading(false);
-            return; // OK, it's an admin
+        const response = await fetch(`/api/admin/check?t=${Date.now()}`);
+        if (!cancelled) {
+          if (response.ok) {
+            const data = await response.json();
+            if (data.isAdmin) {
+              setIsAdminMode(true);
+              setStatus('authorized');
+            } else {
+              setIsAdminMode(false);
+              setStatus('denied');
+            }
+          } else {
+            setIsAdminMode(false);
+            setStatus('denied');
           }
         }
       } catch (error) {
-        console.error("Error verificando admin en la BD:", error);
-      } 
-      
-      // If we reach here, verification failed or user is not admin
-      setLoading(false);
-      setIsAdminMode(false);
-      navigate('/dashboard', { replace: true });
+        console.error("Error verificando admin:", error);
+        if (!cancelled) {
+          setIsAdminMode(false);
+          setStatus('denied');
+        }
+      }
     };
-    
-    checkAdmin();
-  }, [user, navigate, setIsAdminMode]);
 
-  if (loading) {
-    return <PageLoader />;
+    verifyAdmin();
+    return () => { cancelled = true; };
+  }, [user, setIsAdminMode]);
+
+  if (status === 'loading') {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#FFD700]/30 border-t-[#FFD700] rounded-full animate-spin"></div>
+      </div>
+    );
   }
 
-  // Si después de todo no es admin verificado, devolvemos null porque el useEffect ya hizo el navigate
-  if (!isVerifiedAdmin) {
-    return null;
+  if (status === 'denied') {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <Outlet />;
