@@ -47,8 +47,8 @@ export const AuthProvider = ({ children }) => {
     }
     setUser(null);
     setAdminMode(false);
-    localStorage.removeItem('user');
-    sessionStorage.removeItem('user');
+    localStorage.clear();
+    sessionStorage.clear();
   };
 
   return (
