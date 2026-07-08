@@ -18,6 +18,23 @@ const AlertModal = ({ config, onClose }) => {
 
   useGSAP(() => {
     if (config.show && !isClosing && lineRef.current) {
+      // Leer preferencia local en caso de que useAuth no esté disponible dentro de este scope por circularidad o lo leemos directamente
+      const userStr = localStorage.getItem('user');
+      let animationsEnabled = true;
+      if (userStr) {
+        try {
+          const userObj = JSON.parse(userStr);
+          if (userObj.AnimacionesActivadas === false) animationsEnabled = false;
+        } catch(e){}
+      }
+
+      if (!animationsEnabled && config.type === 'success') {
+        gsap.set(bgRef.current, { opacity: 1 });
+        gsap.set(lineRef.current, { scaleX: 1, scaleY: 1, opacity: 1 });
+        gsap.set(dataRef.current, { opacity: 1, y: 0 });
+        return;
+      }
+
       const tl = gsap.timeline();
       tl.fromTo(bgRef.current, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: 'power2.out' });
       tl.fromTo(lineRef.current, 

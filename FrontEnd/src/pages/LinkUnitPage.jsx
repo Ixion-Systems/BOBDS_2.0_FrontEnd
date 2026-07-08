@@ -92,6 +92,11 @@ const LinkUnitPage = () => {
 
   useEffect(() => {
     if (success) {
+      if (user?.AnimacionesActivadas === false) {
+        navigate('/dashboard/units');
+        return;
+      }
+
       const tl = gsap.timeline({ 
         onComplete: () => {
           gsap.killTweensOf('.fullscreen-speed-lines > div');
