@@ -54,37 +54,37 @@ const DashboardPage = () => {
                 {/* Update Item 1 */}
                 <div className="update-item group relative pl-4 lg:pl-5 border-l border-outline/20 hover:border-[#FFD700] transition-colors duration-300">
                   <div className="absolute -left-[6px] top-1.5 w-3 h-3 rounded-none bg-[#131313] border border-outline group-hover:bg-[#FFD700] group-hover:border-[#FFD700] transition-colors duration-300 rotate-45"></div>
-                  <span className="font-label-sm text-[10px] lg:text-[11px] tracking-[0.1em] text-outline mb-1 block uppercase text-left">Fase 10 - Gestión de Permisos</span>
-                  <h3 className="font-headline-md text-[16px] lg:text-[18px] text-on-surface mb-1 text-left">Roles Jerárquicos</h3>
+                  <span className="font-label-sm text-[10px] lg:text-[11px] tracking-[0.1em] text-outline mb-1 block uppercase text-left">Fase 14 - Centralización</span>
+                  <h3 className="font-headline-md text-[16px] lg:text-[18px] text-on-surface mb-1 text-left">Panel de Ajustes</h3>
                   <p className="font-body-lg text-[13px] lg:text-[14px] text-on-surface-variant opacity-80 leading-snug text-left">
-                    Soporte para múltiples usuarios operando una unidad bajo los roles de Invitado, Operador, Administrador, Co-Propietario y Propietario.
+                    Nueva página de configuración centralizada, integrando preferencias de usuario, seguridad de la cuenta y enlaces a utilidades de administrador.
                   </p>
                 </div>
                 {/* Update Item 2 */}
                 <div className="update-item group relative pl-4 lg:pl-5 border-l border-outline/20 hover:border-[#FFD700] transition-colors duration-300">
                   <div className="absolute -left-[6px] top-1.5 w-3 h-3 rounded-none bg-[#131313] border border-outline group-hover:bg-[#FFD700] group-hover:border-[#FFD700] transition-colors duration-300 rotate-45"></div>
-                  <span className="font-label-sm text-[10px] lg:text-[11px] tracking-[0.1em] text-outline mb-1 block uppercase text-left">Fase 11 - Trazabilidad</span>
-                  <h3 className="font-headline-md text-[16px] lg:text-[18px] text-on-surface mb-1 text-left">Monitoreo de Auditoría</h3>
+                  <span className="font-label-sm text-[10px] lg:text-[11px] tracking-[0.1em] text-outline mb-1 block uppercase text-left">Fase 15 - Seguridad de Perfil</span>
+                  <h3 className="font-headline-md text-[16px] lg:text-[18px] text-on-surface mb-1 text-left">Cambio de Credenciales</h3>
                   <p className="font-body-lg text-[13px] lg:text-[14px] text-on-surface-variant opacity-80 leading-snug text-left">
-                    Nuevo panel para administradores con historial de acceso, modificación de unidades y emisión de órdenes registrado y filtrable.
+                    Gestión local de actualización del nombre de usuario y contraseñas. Validación cruzada de la contraseña actual, hash en tiempo real e intercepción de visibilidad.
                   </p>
                 </div>
                 {/* Update Item 3 */}
                 <div className="update-item group relative pl-4 lg:pl-5 border-l border-outline/20 hover:border-[#FFD700] transition-colors duration-300">
                   <div className="absolute -left-[6px] top-1.5 w-3 h-3 rounded-none bg-[#131313] border border-outline group-hover:bg-[#FFD700] group-hover:border-[#FFD700] transition-colors duration-300 rotate-45"></div>
-                  <span className="font-label-sm text-[10px] lg:text-[11px] tracking-[0.1em] text-outline mb-1 block uppercase text-left">Fase 12 - UI/UX</span>
-                  <h3 className="font-headline-md text-[16px] lg:text-[18px] text-on-surface mb-1 text-left">Componentes y GSAP</h3>
+                  <span className="font-label-sm text-[10px] lg:text-[11px] tracking-[0.1em] text-outline mb-1 block uppercase text-left">Fase 16 - Experiencia y UX</span>
+                  <h3 className="font-headline-md text-[16px] lg:text-[18px] text-on-surface mb-1 text-left">Preferencias del Sistema</h3>
                   <p className="font-body-lg text-[13px] lg:text-[14px] text-on-surface-variant opacity-80 leading-snug text-left">
-                    Se han rediseñado los comboboxes y modales de confirmación con menús flotantes estilo oscuro (dark-mode), incluyendo animaciones GSAP sincronizadas.
+                    El usuario ahora puede apagar por completo las animaciones GSAP de impacto global, ahorrando tiempo en sus operaciones masivas y volviendo las acciones instantáneas.
                   </p>
                 </div>
                 {/* Update Item 4 */}
                 <div className="update-item group relative pl-4 lg:pl-5 border-l border-outline/20 hover:border-[#FFD700] transition-colors duration-300">
                   <div className="absolute -left-[6px] top-1.5 w-3 h-3 rounded-none bg-[#131313] border border-outline group-hover:bg-[#FFD700] group-hover:border-[#FFD700] transition-colors duration-300 rotate-45"></div>
-                  <span className="font-label-sm text-[10px] lg:text-[11px] tracking-[0.1em] text-outline mb-1 block uppercase text-left">Fase 13 - Estructura Interna</span>
-                  <h3 className="font-headline-md text-[16px] lg:text-[18px] text-on-surface mb-1 text-left">Separación de Unidades</h3>
+                  <span className="font-label-sm text-[10px] lg:text-[11px] tracking-[0.1em] text-outline mb-1 block uppercase text-left">Fase 17 - Auditoría Activa</span>
+                  <h3 className="font-headline-md text-[16px] lg:text-[18px] text-on-surface mb-1 text-left">Registro de Cambios de Cuenta</h3>
                   <p className="font-body-lg text-[13px] lg:text-[14px] text-on-surface-variant opacity-80 leading-snug text-left">
-                    Listados estructurados y segregación de datos separando las unidades nativas del usuario de las delegadas/vinculadas.
+                    Cualquier actualización en los datos personales se reporta en vivo al tablero de Log de Administradores con nivel Gravedad 3.
                   </p>
                 </div>
               </div>
@@ -99,23 +99,19 @@ const DashboardPage = () => {
               <div className="flex-1 bg-[#1a1a1a]/[0.85] backdrop-blur-md/50 rounded-md border border-outline/10 p-3 lg:p-5 font-mono text-[#a0a0a0] flex flex-col gap-2.5 lg:gap-4 overflow-y-auto custom-scrollbar text-[12px] lg:text-[14px] text-left lg:mt-2 min-h-0">
                   <div className="dev-note-item flex items-start gap-2.5 lg:gap-3 pb-2.5 lg:pb-4 border-b border-outline/5 hover:text-[#FFD700] transition-colors duration-300 group/note text-left shrink-0">
                     <span className="text-[#FFD700] shrink-0 mt-0.5 opacity-80 group-hover/note:opacity-100 transition-opacity">&lt;/&gt;</span>
-                    <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">Criptografía SHA-256:</strong> Algoritmos hash implementados en backend para Login/Signup.</span>
+                    <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">GSAP By-pass:</strong> Lógica interceptora global insertada en useGSAP() para omitir animaciones según la variable AnimacionesActivadas en contexto.</span>
                   </div>
                   <div className="dev-note-item flex items-start gap-2.5 lg:gap-3 pb-2.5 lg:pb-4 border-b border-outline/5 hover:text-[#FFD700] transition-colors duration-300 group/note text-left shrink-0">
                     <span className="text-[#FFD700] shrink-0 mt-0.5 opacity-80 group-hover/note:opacity-100 transition-opacity">&lt;/&gt;</span>
-                    <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">ReentrantReadWriteLock & Semaphores:</strong> Escalabilidad y atomicidad combinadas en backend para proteger recursos críticos.</span>
+                    <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">Reestructuración Storage:</strong> La sesión y persistencia se lee conjuntamente de sessionStorage/localStorage para evitar bugs con animaciones tras refresco.</span>
                   </div>
                   <div className="dev-note-item flex items-start gap-2.5 lg:gap-3 pb-2.5 lg:pb-4 border-b border-outline/5 hover:text-[#FFD700] transition-colors duration-300 group/note text-left shrink-0">
                     <span className="text-[#FFD700] shrink-0 mt-0.5 opacity-80 group-hover/note:opacity-100 transition-opacity">&lt;/&gt;</span>
-                    <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">Componentes Dropdown UI:</strong> Se descartaron los selectivos nativos en favor de Comboboxes CSS Grid absolutos optimizados.</span>
-                  </div>
-                  <div className="dev-note-item flex items-start gap-2.5 lg:gap-3 pb-2.5 lg:pb-4 border-b border-outline/5 hover:text-[#FFD700] transition-colors duration-300 group/note text-left shrink-0">
-                    <span className="text-[#FFD700] shrink-0 mt-0.5 opacity-80 group-hover/note:opacity-100 transition-opacity">&lt;/&gt;</span>
-                    <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">GSAP Modals:</strong> Múltiples portales React modales rediseñados con líneas de energía, glow, elásticos.</span>
+                    <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">Visibilidad Dual:</strong> Ojo toggle de contraseña utilizando inputs de React con seteo temporal del atributo "type", integrando Material Symbols.</span>
                   </div>
                   <div className="dev-note-item flex items-start gap-2.5 lg:gap-3 hover:text-[#FFD700] transition-colors duration-300 group/note text-left shrink-0">
                     <span className="text-[#FFD700] shrink-0 mt-0.5 opacity-80 group-hover/note:opacity-100 transition-opacity">&lt;/&gt;</span>
-                    <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">Auditoría Action-Log:</strong> Interceptor (o capa de servicios) persistiendo interacciones (Email/Acción/Target) globalmente.</span>
+                    <span className="leading-tight text-left"><strong className="text-[#FFD700]/90 font-normal">Arquitectura de Logs:</strong> Se usó un nivel de gravedad 3 para modificaciones de cuenta que, vía lock concurrente, escribe en la base de logs NoSQL en milisegundos.</span>
                   </div>
                 </div>
               </div>

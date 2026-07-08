@@ -26,6 +26,8 @@ B.O.B.D.S. Client is the frontend application for the Base Operativa de Batalla 
 * **Role-Based Views & Permissions:** Complex UI conditional rendering strictly governed by the operator's role hierarchy (Propietario, Co-Propietario, Administrador, Operador, Invitado).
 * **Audit & Monitoring Panel:** Dedicated interface for Administrators and Owners to trace platform-wide interaction logs with custom combobox filters.
 * **Order Management & History:** Create and inject orders directly into units, with full traceability and dynamic history.
+* **Centralized Settings Panel:** Dedicated `SettingsPage` allowing operators to seamlessly update their username and securely change passwords with UI-based validation.
+* **Global Animation Control:** User-level preferences stored in context that globally intercept and bypass GSAP animations for faster operations.
 * **Immersive UI/UX:** High-performance animations powered by GSAP (including timeline-managed deletions), glowing glassmorphism aesthetics, custom comboboxes replacing native selects, and responsive layouts.
 
 ## Prerequisites
