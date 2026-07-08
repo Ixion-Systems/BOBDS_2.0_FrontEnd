@@ -438,6 +438,13 @@ const OrderHistoryPage = () => {
   /* Animación Especial de Eliminación (Acción Exitosa) */
   useGSAP(() => {
     if (actionSuccess && actionType === 'delete') {
+      if (user?.AnimacionesActivadas === false) {
+        setActionSuccess(false);
+        setOrderTarget(null);
+        fetchOrders(selectedUnitId);
+        return;
+      }
+
       gsap.set(['.delete-circle', '.delete-icon', '.delete-speed-bg-wrapper', '.delete-speed-lines'], { clearProps: 'all' });
 
       const tl = gsap.timeline({ 

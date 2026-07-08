@@ -130,6 +130,14 @@ const WriteOrderPage = () => {
 
   useEffect(() => {
     if (success) {
+      if (user?.AnimacionesActivadas === false) {
+        setSuccess(false);
+        setUnit('');
+        setDirective('');
+        setNotes('');
+        return;
+      }
+
       const tl = gsap.timeline({ 
         onComplete: () => {
           gsap.killTweensOf('.fullscreen-speed-lines > div');

@@ -684,6 +684,17 @@ const UnitsPage = () => {
 
   useGSAP(() => {
     if (deleteSuccess || unlinkSuccess || modifySuccess) {
+      if (user?.AnimacionesActivadas === false) {
+        setDeleteSuccess(false);
+        setUnlinkSuccess(false);
+        setModifySuccess(false);
+        setUnitToDelete(null);
+        setUnitToUnlink(null);
+        setUnitToModify(null);
+        fetchUnits();
+        return;
+      }
+
       const tl = gsap.timeline({ 
         onComplete: () => {
             gsap.killTweensOf('.delete-speed-lines > div');
