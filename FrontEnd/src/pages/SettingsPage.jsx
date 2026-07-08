@@ -165,7 +165,8 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-8">
+    <div className="w-full h-full flex flex-col overflow-hidden">
+      <div className="w-full max-w-4xl mx-auto px-4 py-8 flex-1 overflow-y-auto custom-scrollbar">
       <div className="mb-8">
         <h1 className="text-4xl font-display font-bold text-white tracking-tight">Ajustes</h1>
         <p className="text-outline mt-2 font-body text-lg">Configuración de tu cuenta y preferencias del sistema.</p>
@@ -315,6 +316,7 @@ const SettingsPage = () => {
         </div>
       )}
 
+      </div>
     </div>
   );
 };
