@@ -166,14 +166,13 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="w-full h-full flex flex-col overflow-hidden">
-      <div className="w-full max-w-4xl mx-auto px-4 py-8 flex-1 overflow-y-auto custom-scrollbar">
-      <div className="mb-8">
+    <div className="w-full h-full max-w-4xl mx-auto px-4 py-8 flex flex-col overflow-hidden">
+      <div className="mb-8 shrink-0">
         <h1 className="text-4xl font-display font-bold text-white tracking-tight">Ajustes</h1>
         <p className="text-outline mt-2 font-body text-lg">Configuración de tu cuenta y preferencias del sistema.</p>
       </div>
 
-      <div className="flex flex-col gap-6">
+      <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 pb-8 flex flex-col gap-6">
         
         {/* SECCION: PERFIL */}
         <div className="bg-[#121212]/[0.85] backdrop-blur-md rounded-2xl border border-outline/10 p-6 flex flex-col gap-6 shadow-lg">
@@ -344,7 +343,6 @@ const SettingsPage = () => {
         </div>
       )}
 
-      </div>
     </div>
   );
 };
