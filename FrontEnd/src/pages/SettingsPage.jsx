@@ -26,6 +26,7 @@ const SettingsPage = () => {
   // Form states
   const [newUsername, setNewUsername] = useState('');
   const [passwords, setPasswords] = useState({ current: '', newPass: '', repeat: '' });
+  const [showPasswords, setShowPasswords] = useState({ current: false, newPass: false, repeat: false });
   
   const bgRef = useRef(null);
   const panelRef = useRef(null);
@@ -279,32 +280,59 @@ const SettingsPage = () => {
           <div ref={panelRef} className="relative bg-[#1a1a1a] border border-outline/20 rounded-2xl w-full max-w-md p-6 shadow-2xl">
             <h3 className="text-2xl font-display font-bold text-white mb-4">Cambiar Contraseña</h3>
             <div className="space-y-4 mb-6">
-              <div>
+              <div className="relative">
                 <label className="block text-sm font-medium text-outline mb-1">Contraseña Actual</label>
-                <input 
-                  type="password" 
-                  value={passwords.current}
-                  onChange={e => setPasswords({ ...passwords, current: e.target.value })}
-                  className="w-full bg-[#121212] border border-outline/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-[#FFD700] transition-colors"
-                />
+                <div className="relative">
+                  <input 
+                    type={showPasswords.current ? "text" : "password"} 
+                    value={passwords.current}
+                    onChange={e => setPasswords({ ...passwords, current: e.target.value })}
+                    className="w-full bg-[#121212] border border-outline/20 rounded-lg pl-4 pr-12 py-2 text-white focus:outline-none focus:border-[#FFD700] transition-colors"
+                  />
+                  <button 
+                    type="button"
+                    onClick={() => setShowPasswords({ ...showPasswords, current: !showPasswords.current })}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white hover:text-[#FFD700] transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-[20px]">{showPasswords.current ? 'visibility_off' : 'visibility'}</span>
+                  </button>
+                </div>
               </div>
-              <div>
+              <div className="relative">
                 <label className="block text-sm font-medium text-outline mb-1">Nueva Contraseña</label>
-                <input 
-                  type="password" 
-                  value={passwords.newPass}
-                  onChange={e => setPasswords({ ...passwords, newPass: e.target.value })}
-                  className="w-full bg-[#121212] border border-outline/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-[#FFD700] transition-colors"
-                />
+                <div className="relative">
+                  <input 
+                    type={showPasswords.newPass ? "text" : "password"} 
+                    value={passwords.newPass}
+                    onChange={e => setPasswords({ ...passwords, newPass: e.target.value })}
+                    className="w-full bg-[#121212] border border-outline/20 rounded-lg pl-4 pr-12 py-2 text-white focus:outline-none focus:border-[#FFD700] transition-colors"
+                  />
+                  <button 
+                    type="button"
+                    onClick={() => setShowPasswords({ ...showPasswords, newPass: !showPasswords.newPass })}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white hover:text-[#FFD700] transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-[20px]">{showPasswords.newPass ? 'visibility_off' : 'visibility'}</span>
+                  </button>
+                </div>
               </div>
-              <div>
+              <div className="relative">
                 <label className="block text-sm font-medium text-outline mb-1">Repetir Nueva Contraseña</label>
-                <input 
-                  type="password" 
-                  value={passwords.repeat}
-                  onChange={e => setPasswords({ ...passwords, repeat: e.target.value })}
-                  className="w-full bg-[#121212] border border-outline/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-[#FFD700] transition-colors"
-                />
+                <div className="relative">
+                  <input 
+                    type={showPasswords.repeat ? "text" : "password"} 
+                    value={passwords.repeat}
+                    onChange={e => setPasswords({ ...passwords, repeat: e.target.value })}
+                    className="w-full bg-[#121212] border border-outline/20 rounded-lg pl-4 pr-12 py-2 text-white focus:outline-none focus:border-[#FFD700] transition-colors"
+                  />
+                  <button 
+                    type="button"
+                    onClick={() => setShowPasswords({ ...showPasswords, repeat: !showPasswords.repeat })}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white hover:text-[#FFD700] transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-[20px]">{showPasswords.repeat ? 'visibility_off' : 'visibility'}</span>
+                  </button>
+                </div>
               </div>
               <p className="text-xs text-outline/60 mt-1">La contraseña debe tener de 8 a 12 caracteres, incluyendo mayúsculas, minúsculas y números.</p>
             </div>

@@ -19,7 +19,7 @@ const AlertModal = ({ config, onClose }) => {
   useGSAP(() => {
     if (config.show && !isClosing && lineRef.current) {
       // Leer preferencia local en caso de que useAuth no esté disponible dentro de este scope por circularidad o lo leemos directamente
-      const userStr = localStorage.getItem('user');
+      const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
       let animationsEnabled = true;
       if (userStr) {
         try {
